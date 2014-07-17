@@ -1,0 +1,17 @@
+*.swp
+*.sdf
+*.exe
+*.ilk
+*.pdb
+Debug/*
+*.opensdf
+Base*txt
+*.scvx
+*.CPP
+*.H
+*.h
+*.suo
+*.INF
+*.mdb
+Release/*
+*.xls
