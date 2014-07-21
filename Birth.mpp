@@ -1,0 +1,48 @@
+parameters
+{
+	double DailyMaxTemperature[ REPORT_TIME ];
+	double k1[ LARVA_NR ];
+	double k2[ LARVA_NR ];
+};
+
+classification LARVA_NR
+{
+	FIRST,
+		SUBSEQUENT
+};
+
+actor TsetseFly
+{
+	LARVA_NR first_larvae = { FIRST };
+
+	event timeLarvalProductionEvent, LarvalProductionEvent;
+
+	double NEXT_LARVA_DEPOSIT(int current_report_time, double first_par, double second_par);
+};
+
+TIME TsetseFly::timeLarvalProductionEvent()
+{
+	return next_larva_deposit;
+}
+
+void TsetseFly::LarvalProductionEvent()
+{
+	TsetseFly *paTsetseFly = new TsetseFly();
+	paTsetseFly->Start();
+
+	first_larvae = SUBSEQUENT;
+	next_larva_deposit = WAIT( (TIME) NEXT_LARVA_DEPOSIT( report_time, k1[ first_larvae ], k2[ first_larvae ] ) );
+}
+
+double TsetseFly::NEXT_LARVA_DEPOSIT(int current_report_time, double first_par, double second_par)
+{
+	double inter_larval_period = 0;
+	double sum = 0;
+	int tot = 16;
+	for ( int nD = 0; nD < tot; nD++ ) 
+	{
+		sum += DailyMaxTemperature[ current_report_time + nD ];
+	}
+	inter_larval_period = 1/(first_par + second_par*( sum/tot - 24 ));
+	return inter_larval_period;
+ };

@@ -97,6 +97,7 @@
     <None Include="app.ico" />
     <None Include="Base(TsetseFlyCore).dat" />
     <None Include="Base.scex" />
+    <None Include="Birth.mpp" />
     <None Include="ModelStrings.mpp" />
     <None Include="parse.inf" />
     <None Include="ReadMe.txt" />
@@ -106,6 +107,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Actors.cpp" />
+    <ClCompile Include="Birth.cpp" />
     <ClCompile Include="ModelStrings.cpp" />
     <ClCompile Include="Tabinit.cpp" />
     <ClCompile Include="TickerCore.cpp" />

@@ -4,11 +4,16 @@ parameters {
 		years.
 */
 
-	double	MortalityHazard = .014; //EN Annual hazard of death //FR Hasard annuel de mortalité
+	double	MortalityHazard = .014; //EN Annual hazard of death
 /* NOTE ( StartingPopulationSize, EN )
 >An arbitrarily selected value.
 */
 
-	int	StartingPopulationSize = 500000; //EN Starting population size //FR Taille de la population de départ
+	int	StartingPopulationSize = 100; //EN Starting population size
+
+	double DailyMaxTemperature[ REPORT_TIME ] = { ( 201 ) 35, };
+	double k1[ LARVA_NR ] = { 0.061, 0.1046 };
+	double k2[ LARVA_NR ] = { 0.0020, 0.0052 };
+
 };
 
