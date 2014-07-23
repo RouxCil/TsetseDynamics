@@ -9,6 +9,7 @@ actor_set TsetseFly asAllTsetseFly;
 
 classification GENDER
 {
+	PUPA,
 	MALE,
 	FEMALE
 };
@@ -18,7 +19,7 @@ actor TsetseFly
 	TIME next_larva_deposit = { TIME_INFINITE };
 
 	REPORT_TIME report_time = { 0 };
-	GENDER gender = ( RandUniform(2) <= 0.5 ) ? FEMALE : MALE;
+	GENDER gender = { PUPA };
 	
 	logical alive = {TRUE};
 	
@@ -45,10 +46,10 @@ void TsetseFly::Start()
 {
 	age = 0;
 	time;
-	
-	if (gender == FEMALE)
+
+	if (gender == PUPA)
 	{
-		next_larva_deposit = WAIT((TIME) NEXT_LARVA_DEPOSIT( report_time, k1[ first_larvae ], k2[ first_larvae ] ) );
+		adult_emerge = WAIT((TIME) ADULT_EMERGE( report_time, exp_const, exp_param1, k ) );
 	}
 }
 

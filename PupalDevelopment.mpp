@@ -1,0 +1,43 @@
+parameters
+{
+	double exp_const;
+	double exp_param1;
+	double k;
+};
+actor TsetseFly
+{
+	TIME adult_emerge = { TIME_INFINITE };
+
+	event timeAdultEmerge, AdultEmergeEvent;
+
+	double ADULT_EMERGE( int current_report_time, double par1, double par2, double par3 );
+};
+
+TIME TsetseFly::timeAdultEmerge()
+{
+	return adult_emerge;
+}
+
+void TsetseFly::AdultEmergeEvent()
+{
+	adult_emerge = TIME_INFINITE;
+
+	gender = ( RandUniform(2) <= 0.5 ) ? FEMALE : MALE;
+	if (gender == FEMALE)
+	{
+		next_larva_deposit = WAIT((TIME) NEXT_LARVA_DEPOSIT( report_time, k1[ first_larvae ], k2[ first_larvae ] ) );
+	}
+}
+
+double TsetseFly::ADULT_EMERGE( int current_report_time, double par1, double par2 , double par3)
+{
+	double puparial_period = 0;
+	double sum = 0;
+	int tot = 30;
+	for ( int nD = 0; nD < tot; nD++ ) 
+	{
+		sum += DailyMaxTemperature[ current_report_time + nD ];
+	}
+	puparial_period = (1 + exp(par1 + par2*(sum/tot)))/par3;
+	return puparial_period;
+ };

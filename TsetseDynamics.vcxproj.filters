@@ -41,6 +41,9 @@
     <None Include="Birth.mpp">
       <Filter>Modules %28mpp%29</Filter>
     </None>
+    <None Include="PupalDevelpoment.mpp">
+      <Filter>Modules %28mpp%29</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="TsetseDynamics.cpp">
@@ -62,6 +65,9 @@
       <Filter>C++ Files</Filter>
     </ClCompile>
     <ClCompile Include="Birth.cpp">
+      <Filter>C++ Files</Filter>
+    </ClCompile>
+    <ClCompile Include="PupalDevelpoment.cpp">
       <Filter>C++ Files</Filter>
     </ClCompile>
   </ItemGroup>
