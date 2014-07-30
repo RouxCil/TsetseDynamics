@@ -1,16 +1,17 @@
 parameters
 {
-	double exp_const;
-	double exp_param1;
-	double k;
+	double pupa_exp_const[GENDER];
+	double pupa_exp_TempPar[GENDER];
+	double pupa_numeric_constant[GENDER];
 };
+
 actor TsetseFly
 {
 	TIME adult_emerge = { TIME_INFINITE };
 
 	event timeAdultEmerge, AdultEmergeEvent;
 
-	double ADULT_EMERGE( int current_report_time, double par1, double par2, double par3 );
+	double ADULT_EMERGE( int current_report_time, double k, double a, double b );
 };
 
 TIME TsetseFly::timeAdultEmerge()
@@ -22,22 +23,23 @@ void TsetseFly::AdultEmergeEvent()
 {
 	adult_emerge = TIME_INFINITE;
 
-	gender = ( RandUniform(2) <= 0.5 ) ? FEMALE : MALE;
-	if (gender == FEMALE)
+	gender = ( gender <= PUPA_FEMALE ) ? ADULT_FEMALE : ADULT_MALE;
+	
+	if (gender == ADULT_FEMALE)
 	{
-		next_larva_deposit = WAIT((TIME) NEXT_LARVA_DEPOSIT( report_time, k1[ first_larvae ], k2[ first_larvae ] ) );
+		next_larva_deposit = WAIT((TIME) NEXT_LARVA_DEPOSIT( report_time, larva_const[ first_larvae ], larva_TempPar[ first_larvae ] ) );
 	}
+	markable = TRUE;
 }
 
-double TsetseFly::ADULT_EMERGE( int current_report_time, double par1, double par2 , double par3)
+double TsetseFly::ADULT_EMERGE( int current_report_time, double k, double a, double b )
 {
 	double puparial_period = 0;
 	double sum = 0;
-	int tot = 30;
-	for ( int nD = 0; nD < tot; nD++ ) 
+	while ( sum < 1 ) 
 	{
-		sum += DailyMaxTemperature[ current_report_time + nD ];
+		sum += k / (1 + exp( a + b * DailyAvgTemperature[RANGE_POS( REPORT_TIME, current_report_time + puparial_period )]));
+		puparial_period++;
 	}
-	puparial_period = (1 + exp(par1 + par2*(sum/tot)))/par3;
 	return puparial_period;
  };

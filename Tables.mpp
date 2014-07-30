@@ -1,0 +1,269 @@
+table TsetseFly FMark1
+[gender == ADULT_FEMALE]
+{
+	{
+		event(value_at_changes(mark1,indexer)),
+		event(value_at_changes(mark2,indexer)),
+		event(value_at_changes(mark3,indexer)),
+		event(value_at_changes(mark4,indexer)),
+		event(value_at_changes(mark5,indexer)),
+		event(value_at_changes(mark6,indexer)),
+		event(value_at_changes(mark7,indexer)),
+		event(value_at_changes(mark8,indexer)),
+		event(value_at_changes(mark9,indexer)),
+		event(value_at_changes(mark10,indexer))
+	}
+	*self_scheduling_split(time,TIMEGROUPS)*mark1+
+};
+
+table TsetseFly FMark2
+[gender == ADULT_FEMALE]
+{
+	{
+		event(value_at_changes(mark2,indexer)),
+		event(value_at_changes(mark3,indexer)),
+		event(value_at_changes(mark4,indexer)),
+		event(value_at_changes(mark5,indexer)),
+		event(value_at_changes(mark6,indexer)),
+		event(value_at_changes(mark7,indexer)),
+		event(value_at_changes(mark8,indexer)),
+		event(value_at_changes(mark9,indexer)),
+		event(value_at_changes(mark10,indexer))
+	}
+	*self_scheduling_split(time,TIMEGROUPS)*mark2+
+};
+
+table TsetseFly FMark3
+[gender == ADULT_FEMALE]
+{
+	{
+		event(value_at_changes(mark3,indexer)),
+		event(value_at_changes(mark4,indexer)),
+		event(value_at_changes(mark5,indexer)),
+		event(value_at_changes(mark6,indexer)),
+		event(value_at_changes(mark7,indexer)),
+		event(value_at_changes(mark8,indexer)),
+		event(value_at_changes(mark9,indexer)),
+		event(value_at_changes(mark10,indexer))
+	}
+	*self_scheduling_split(time,TIMEGROUPS)*mark3+
+};
+
+table TsetseFly FMark4
+[gender == ADULT_FEMALE]
+{
+	{
+		event(value_at_changes(mark4,indexer)),
+		event(value_at_changes(mark5,indexer)),
+		event(value_at_changes(mark6,indexer)),
+		event(value_at_changes(mark7,indexer)),
+		event(value_at_changes(mark8,indexer)),
+		event(value_at_changes(mark9,indexer)),
+		event(value_at_changes(mark10,indexer))
+	}
+	*self_scheduling_split(time,TIMEGROUPS)*mark4+
+};
+
+table TsetseFly FMark5
+[gender == ADULT_FEMALE]
+{
+	{
+		event(value_at_changes(mark5,indexer)),
+		event(value_at_changes(mark6,indexer)),
+		event(value_at_changes(mark7,indexer)),
+		event(value_at_changes(mark8,indexer)),
+		event(value_at_changes(mark9,indexer)),
+		event(value_at_changes(mark10,indexer))
+	}
+	*self_scheduling_split(time,TIMEGROUPS)*mark5+
+};
+
+table TsetseFly FMark6
+[gender == ADULT_FEMALE]
+{
+	{
+		event(value_at_changes(mark6,indexer)),
+		event(value_at_changes(mark7,indexer)),
+		event(value_at_changes(mark8,indexer)),
+		event(value_at_changes(mark9,indexer)),
+		event(value_at_changes(mark10,indexer))
+	}
+	*self_scheduling_split(time,TIMEGROUPS)*mark6+
+};
+
+table TsetseFly FMark7
+[gender == ADULT_FEMALE]
+{
+	{
+		event(value_at_changes(mark7,indexer)),
+		event(value_at_changes(mark8,indexer)),
+		event(value_at_changes(mark9,indexer)),
+		event(value_at_changes(mark10,indexer))
+	}
+	*self_scheduling_split(time,TIMEGROUPS)*mark7+
+};
+
+table TsetseFly FMark8
+[gender == ADULT_FEMALE]
+{
+	{
+		event(value_at_changes(mark8,indexer)),
+		event(value_at_changes(mark9,indexer)),
+		event(value_at_changes(mark10,indexer))
+	}
+	*self_scheduling_split(time,TIMEGROUPS)*mark8+
+};
+
+table TsetseFly FMark9
+[gender == ADULT_FEMALE]
+{
+	{
+		event(value_at_changes(mark9,indexer)),
+		event(value_at_changes(mark10,indexer))
+	}
+	*self_scheduling_split(time,TIMEGROUPS)*mark9+
+};
+
+table TsetseFly FMark10
+[gender == ADULT_FEMALE]
+{
+	{
+		event(value_at_changes(mark10,indexer))
+	}
+	*self_scheduling_split(time,TIMEGROUPS)*mark10+
+};
+
+table TsetseFly MMark1
+[gender == ADULT_MALE]
+{
+	{
+		event(value_at_changes(mark1,indexer)),
+		event(value_at_changes(mark2,indexer)),
+		event(value_at_changes(mark3,indexer)),
+		event(value_at_changes(mark4,indexer)),
+		event(value_at_changes(mark5,indexer)),
+		event(value_at_changes(mark6,indexer)),
+		event(value_at_changes(mark7,indexer)),
+		event(value_at_changes(mark8,indexer)),
+		event(value_at_changes(mark9,indexer)),
+		event(value_at_changes(mark10,indexer))
+	}
+	*self_scheduling_split(time,TIMEGROUPS)*mark1+
+};
+
+table TsetseFly MMark2
+[gender == ADULT_MALE]
+{
+	{
+		event(value_at_changes(mark2,indexer)),
+		event(value_at_changes(mark3,indexer)),
+		event(value_at_changes(mark4,indexer)),
+		event(value_at_changes(mark5,indexer)),
+		event(value_at_changes(mark6,indexer)),
+		event(value_at_changes(mark7,indexer)),
+		event(value_at_changes(mark8,indexer)),
+		event(value_at_changes(mark9,indexer)),
+		event(value_at_changes(mark10,indexer))
+	}
+	*self_scheduling_split(time,TIMEGROUPS)*mark2+
+};
+
+table TsetseFly MMark3
+[gender == ADULT_MALE]
+{
+	{
+		event(value_at_changes(mark3,indexer)),
+		event(value_at_changes(mark4,indexer)),
+		event(value_at_changes(mark5,indexer)),
+		event(value_at_changes(mark6,indexer)),
+		event(value_at_changes(mark7,indexer)),
+		event(value_at_changes(mark8,indexer)),
+		event(value_at_changes(mark9,indexer)),
+		event(value_at_changes(mark10,indexer))
+	}
+	*self_scheduling_split(time,TIMEGROUPS)*mark3+
+};
+
+table TsetseFly MMark4
+[gender == ADULT_MALE]
+{
+	{
+		event(value_at_changes(mark4,indexer)),
+		event(value_at_changes(mark5,indexer)),
+		event(value_at_changes(mark6,indexer)),
+		event(value_at_changes(mark7,indexer)),
+		event(value_at_changes(mark8,indexer)),
+		event(value_at_changes(mark9,indexer)),
+		event(value_at_changes(mark10,indexer))
+	}
+	*self_scheduling_split(time,TIMEGROUPS)*mark4+
+};
+
+table TsetseFly MMark5
+[gender == ADULT_MALE]
+{
+	{
+		event(value_at_changes(mark5,indexer)),
+		event(value_at_changes(mark6,indexer)),
+		event(value_at_changes(mark7,indexer)),
+		event(value_at_changes(mark8,indexer)),
+		event(value_at_changes(mark9,indexer)),
+		event(value_at_changes(mark10,indexer))
+	}
+	*self_scheduling_split(time,TIMEGROUPS)*mark5+
+};
+
+table TsetseFly MMark6
+[gender == ADULT_MALE]
+{
+	{
+		event(value_at_changes(mark6,indexer)),
+		event(value_at_changes(mark7,indexer)),
+		event(value_at_changes(mark8,indexer)),
+		event(value_at_changes(mark9,indexer)),
+		event(value_at_changes(mark10,indexer))
+	}
+	*self_scheduling_split(time,TIMEGROUPS)*mark6+
+};
+
+table TsetseFly MMark7
+[gender == ADULT_MALE]
+{
+	{
+		event(value_at_changes(mark7,indexer)),
+		event(value_at_changes(mark8,indexer)),
+		event(value_at_changes(mark9,indexer)),
+		event(value_at_changes(mark10,indexer))
+	}
+	*self_scheduling_split(time,TIMEGROUPS)*mark7+
+};
+
+table TsetseFly MMark8
+[gender == ADULT_MALE]
+{
+	{
+		event(value_at_changes(mark8,indexer)),
+		event(value_at_changes(mark9,indexer)),
+		event(value_at_changes(mark10,indexer))
+	}
+	*self_scheduling_split(time,TIMEGROUPS)*mark8+
+};
+
+table TsetseFly MMark9
+[gender == ADULT_MALE]
+{
+	{
+		event(value_at_changes(mark9,indexer)),
+		event(value_at_changes(mark10,indexer))
+	}
+	*self_scheduling_split(time,TIMEGROUPS)*mark9+
+};
+
+table TsetseFly MMark10
+[gender == ADULT_MALE]
+{
+	{
+		event(value_at_changes(mark10,indexer))
+	}
+	*self_scheduling_split(time,TIMEGROUPS)*mark10+
+};

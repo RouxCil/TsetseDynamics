@@ -1,23 +1,25 @@
 parameters
 {
-	double DailyMaxTemperature[ REPORT_TIME ];
-	double k1[ LARVA_NR ];
-	double k2[ LARVA_NR ];
+	double larva_const[LARVA_NR];
+	double larva_TempPar[LARVA_NR];
+	double offset;
 };
 
 classification LARVA_NR
 {
 	FIRST,
-		SUBSEQUENT
+	SUBSEQUENT
 };
 
 actor TsetseFly
 {
-	LARVA_NR first_larvae = { FIRST };
+	TIME next_larva_deposit = {TIME_INFINITE};
+	
+	LARVA_NR first_larvae = {FIRST};
 
 	event timeLarvalProductionEvent, LarvalProductionEvent;
 
-	double NEXT_LARVA_DEPOSIT(int current_report_time, double first_par, double second_par);
+	double NEXT_LARVA_DEPOSIT(int current_report_time, double k1, double k2);
 };
 
 TIME TsetseFly::timeLarvalProductionEvent()
@@ -31,18 +33,17 @@ void TsetseFly::LarvalProductionEvent()
 	paTsetseFly->Start();
 
 	first_larvae = SUBSEQUENT;
-	next_larva_deposit = WAIT( (TIME) NEXT_LARVA_DEPOSIT( report_time, k1[ first_larvae ], k2[ first_larvae ] ) );
+	next_larva_deposit = WAIT( (TIME) NEXT_LARVA_DEPOSIT( report_time, larva_const[first_larvae], larva_TempPar[first_larvae] ) );
 }
 
-double TsetseFly::NEXT_LARVA_DEPOSIT(int current_report_time, double first_par, double second_par)
+double TsetseFly::NEXT_LARVA_DEPOSIT(int current_report_time, double k1, double k2)
 {
 	double inter_larval_period = 0;
 	double sum = 0;
-	int tot = 16;
-	for ( int nD = 0; nD < tot; nD++ ) 
+	while ( sum < 1 ) 
 	{
-		sum += DailyMaxTemperature[ current_report_time + nD ];
+		sum += k1 + k2*( DailyAvgTemperature[RANGE_POS( REPORT_TIME, current_report_time + inter_larval_period )] - offset );
+		inter_larval_period++;
 	}
-	inter_larval_period = 1/(first_par + second_par*( sum/tot - 24 ));
 	return inter_larval_period;
  };

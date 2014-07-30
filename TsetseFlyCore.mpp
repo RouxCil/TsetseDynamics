@@ -1,64 +1,42 @@
 parameters 
 {
 	int		StartingPopulationSize;
-	double MortalityHazard;
+	double DailyAvgTemperature[ REPORT_TIME ];
 };
-
 
 actor_set TsetseFly asAllTsetseFly;
 
 classification GENDER
 {
-	PUPA,
-	MALE,
-	FEMALE
+	PUPA_FEMALE,
+	PUPA_MALE,
+	ADULT_FEMALE,
+	ADULT_MALE
 };
 
 actor TsetseFly
 {
-	TIME next_larva_deposit = { TIME_INFINITE };
+	int AGE = self_scheduling_int(age);
 
-	REPORT_TIME report_time = { 0 };
-	GENDER gender = { PUPA };
-	
-	logical alive = {TRUE};
-	
-	event timeMortalityEvent, MortalityEvent;
+	REPORT_TIME report_time = {0};
+	GENDER gender;
 	
 	void Start();
 	void Finish();
 };
 
-TIME TsetseFly::timeMortalityEvent()
-{
-	TIME tEventTime = TIME_INFINITE;
-	tEventTime = WAIT( - TIME( log( RandUniform(1) ) / MortalityHazard ) );
-	return tEventTime;
-}
-
-void TsetseFly::MortalityEvent()
-{
-	alive = FALSE;
-	Finish();
-}
-
 void TsetseFly::Start()
 {
 	age = 0;
 	time;
+	gender = ( RandUniform(2) <= 0.5 ) ? PUPA_FEMALE : PUPA_MALE;
 
-	if (gender == PUPA)
+	if (gender == PUPA_FEMALE || gender == PUPA_MALE)
 	{
-		adult_emerge = WAIT((TIME) ADULT_EMERGE( report_time, exp_const, exp_param1, k ) );
+		adult_emerge = WAIT( (TIME) ADULT_EMERGE(report_time, pupa_numeric_constant[gender], pupa_exp_const[gender], pupa_exp_TempPar[gender]) );
 	}
 }
 
 void TsetseFly::Finish()
 {
 }
-
-track TsetseFly
-{
-	gender,
-	next_larva_deposit
-};

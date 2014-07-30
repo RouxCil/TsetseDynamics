@@ -1,0 +1,73 @@
+parameters
+{
+	double capture_const[GENDER];
+	double capture_AgePar[GENDER];
+};
+
+actor TsetseFly
+{
+	logical markable = {FALSE};
+	int previousEventInterval = {-1};
+	int indexer = {1};
+	int nmarks = {0};
+
+	MARK mark1 = {never99};
+	MARK mark2 = {never99};
+	MARK mark3 = {never99};
+	MARK mark4 = {never99};
+	MARK mark5 = {never99};
+	MARK mark6 = {never99};
+	MARK mark7 = {never99};
+	MARK mark8 = {never99};
+	MARK mark9 = {never99};
+	MARK mark10 = {never99};
+	
+	event timeCapture, CaptureEvent;
+};
+
+partition TIMEGROUPS
+{
+	 7,14,21,28,35,42,49,56,63,70,77,84,91,98,105,112,119,126,133,140,147,154,161,168,175,182,189,196,203,210,217,224,231,238,245,252,259,266,273,280,287,294,301,308,315,322,329,336,343,350,357,364
+};
+
+classification MARK
+{
+	week0,week1,week2,week3,week4,week5,week6,week7,week8,week9,week10,week11,week12,week13,
+	week14,week15,week16,week17,week18,week19,week20,week21,week22,week23,week24,week25,
+	week26,week27,week28,week29,week30,week31,week32,week33,week34,week35,week36,week37,
+	week38,week39,week40,week41,week42,week43,week44,week45,week46,week47,week48,week49,
+	week50,week51,never99
+};
+
+TIME TsetseFly::timeCapture()
+{
+	TIME next_mark_event = TIME_INFINITE;
+	if (markable == TRUE)
+	{
+		next_mark_event = WAIT((TIME) ( -log(RandUniform(3)) / ( capture_const[gender] + capture_AgePar[gender] * AGE) ));
+	}
+	return next_mark_event;
+}
+
+void TsetseFly::CaptureEvent()
+{
+	int curentEventInterval = SPLIT(time, TIMEGROUPS);
+	if (curentEventInterval != previousEventInterval)
+	{
+		switch(nmarks)
+		{
+		case 0: {mark1 = IntTo_MARK( SPLIT(time, TIMEGROUPS) ); }; break;
+		case 1: {mark2 = IntTo_MARK( SPLIT(time, TIMEGROUPS) ); }; break;
+		case 2: {mark3 = IntTo_MARK( SPLIT(time, TIMEGROUPS) ); }; break;
+		case 3: {mark4 = IntTo_MARK( SPLIT(time, TIMEGROUPS) ); }; break;
+		case 4: {mark5 = IntTo_MARK( SPLIT(time, TIMEGROUPS) ); }; break;
+		case 5: {mark6 = IntTo_MARK( SPLIT(time, TIMEGROUPS) ); }; break;
+		case 6: {mark7 = IntTo_MARK( SPLIT(time, TIMEGROUPS) ); }; break;
+		case 7: {mark8 = IntTo_MARK( SPLIT(time, TIMEGROUPS) ); }; break;
+		case 8: {mark9 = IntTo_MARK( SPLIT(time, TIMEGROUPS) ); }; break;
+		case 9: {mark10 = IntTo_MARK( SPLIT(time, TIMEGROUPS) ); }; break;
+		};
+		nmarks++;
+		previousEventInterval = SPLIT(time, TIMEGROUPS);
+	};
+}

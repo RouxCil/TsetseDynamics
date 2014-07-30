@@ -1,33 +1,22 @@
 parameters {
-/* NOTE ( MortalityHazard, EN )
-		An arbitrarily selected value, chosen to produce a life expectancy of about 70
-		years.
-*/
 
-	double	MortalityHazard = .014; //EN MortalityHazard
-/* NOTE ( StartingPopulationSize, EN )
->An arbitrarily selected value.
-*/
+	double larva_const[LARVA_NR] = {0.061, 0.1046};
+	double larva_TempPar[LARVA_NR] = {0.0020, 0.0052};
+	double offset = 24;
 
-	int	StartingPopulationSize = 10; //EN StartingPopulationSize
+	double capture_const[GENDER] = {0, 0, 0.0001, 0.0001};
+	double capture_AgePar[GENDER] = {0, 0, 0.0169, 0.0169};
 
-	 //EN DailyMaxTemperature
-	double	DailyMaxTemperature[REPORT_TIME] = {
-		(201) 35, 
-	};
+	double	mortality_const[GENDER] = {.014, 0.014, 0.014, 0.014};
+	double	mortality_TempPar[GENDER] = {0.0000169, 0.0000169, 0.0000169, 0.0000169};
+	double	mortality_AgePar[GENDER] = {0.0000169, 0.0000169, 0.0000169, 0.0000169};
 
-	 //EN k1
-	double	k1[LARVA_NR] = {
-		0.061, 0.1046, 
-	};
+	double	pupa_exp_const[GENDER] = {5.5, 5.3, 0, 0};
+	double	pupa_exp_TempPar[GENDER] = {-0.25, -0.24, 0, 0};
+	double	pupa_numeric_constant[GENDER] = {0.057, 0.053, 0, 0};
+	
+	int	StartingPopulationSize = 10;
 
-	 //EN k2
-	double	k2[LARVA_NR] = {
-		0.0020, 0.0052, 
-	};
-
-	double exp_const = 5.3;
-	double exp_param1 = -0.24;
-	double k = 0.053;
+	double	DailyAvgTemperature[REPORT_TIME] = {(201) 35};
 };
 

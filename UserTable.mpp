@@ -1,0 +1,60 @@
+user_table Accum_Marks
+{
+	{
+		MARK_F,
+		MARK_M
+	}
+	*MARK*MARK
+};
+
+
+const char* fuser_tab_cell_names[] = {"FMark1.Expr0", "FMark1.Expr1","FMark1.Expr2","FMark1.Expr3","FMark1.Expr4","FMark1.Expr5","FMark1.Expr6","FMark1.Expr7","FMark1.Expr8","FMark1.Expr9",
+									 "FMark2.Expr0", "FMark2.Expr1","FMark2.Expr2","FMark2.Expr3","FMark2.Expr4","FMark2.Expr5","FMark2.Expr6","FMark2.Expr7","FMark2.Expr8",
+									 "FMark3.Expr0", "FMark3.Expr1","FMark3.Expr2","FMark3.Expr3","FMark3.Expr4","FMark3.Expr5","FMark3.Expr6","FMark3.Expr7",
+									 "FMark4.Expr0", "FMark4.Expr1","FMark4.Expr2","FMark4.Expr3","FMark4.Expr4","FMark4.Expr5","FMark4.Expr6",
+									 "FMark5.Expr0", "FMark5.Expr1","FMark5.Expr2","FMark5.Expr3","FMark5.Expr4","FMark5.Expr5",
+									 "FMark6.Expr0", "FMark6.Expr1","FMark6.Expr2","FMark6.Expr3","FMark6.Expr4",
+									 "FMark7.Expr0", "FMark7.Expr1","FMark7.Expr2","FMark7.Expr3",
+									 "FMark8.Expr0", "FMark8.Expr1","FMark8.Expr2",
+									 "FMark9.Expr0", "FMark9.Expr1",
+									 "FMark10.Expr0"};
+
+const char* muser_tab_cell_names[] = {"MMark1.Expr0", "MMark1.Expr1","MMark1.Expr2","MMark1.Expr3","MMark1.Expr4","MMark1.Expr5","MMark1.Expr6","MMark1.Expr7","MMark1.Expr8","MMark1.Expr9",
+									 "MMark2.Expr0", "MMark2.Expr1","MMark2.Expr2","MMark2.Expr3","MMark2.Expr4","MMark2.Expr5","MMark2.Expr6","MMark2.Expr7","MMark2.Expr8",
+									 "MMark3.Expr0", "MMark3.Expr1","MMark3.Expr2","MMark3.Expr3","MMark3.Expr4","MMark3.Expr5","MMark3.Expr6","MMark3.Expr7",
+									 "MMark4.Expr0", "MMark4.Expr1","MMark4.Expr2","MMark4.Expr3","MMark4.Expr4","MMark4.Expr5","MMark4.Expr6",
+									 "MMark5.Expr0", "MMark5.Expr1","MMark5.Expr2","MMark5.Expr3","MMark5.Expr4","MMark5.Expr5",
+									 "MMark6.Expr0", "MMark6.Expr1","MMark6.Expr2","MMark6.Expr3","MMark6.Expr4",
+									 "MMark7.Expr0", "MMark7.Expr1","MMark7.Expr2","MMark7.Expr3",
+									 "MMark8.Expr0", "MMark8.Expr1","MMark8.Expr2",
+									 "MMark9.Expr0", "MMark9.Expr1",
+									 "MMark10.Expr0"};
+
+void UserTables()
+{
+	int fvalueMarks;
+	int ftotalWeek;
+
+	int mvalueMarks;
+	int mtotalWeek;
+
+	for (int j = 0; j < SIZE(MARK)-1; j++)
+	{
+		for (int i = 0; i < SIZE(MARK)-1; i++)
+		{
+			int ftotalWeek = {0};
+			int mtotalWeek = {0};
+			for (int k = 0; k < 55; k++)
+			{
+				fvalueMarks = GetTableValue(fuser_tab_cell_names[k], i, j);
+				ftotalWeek += fvalueMarks;
+				
+				mvalueMarks = GetTableValue(muser_tab_cell_names[k], i, j);
+				mtotalWeek += mvalueMarks;
+			};
+			SetTableValue("Accum_Marks.MARK_F",ftotalWeek, i, j);
+			
+			SetTableValue("Accum_Marks.MARK_M",mtotalWeek, i, j);
+		};
+	};
+};

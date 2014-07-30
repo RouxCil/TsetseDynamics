@@ -1,0 +1,26 @@
+parameters 
+{
+	double mortality_const[GENDER];
+	double mortality_TempPar[GENDER];
+	double mortality_AgePar[GENDER];
+};
+
+actor TsetseFly
+{
+	logical alive = {TRUE};
+	
+	event timeMortalityEvent, MortalityEvent;
+};
+
+TIME TsetseFly::timeMortalityEvent()
+{
+	TIME death_event = TIME_INFINITE;
+	death_event = WAIT((TIME) ( -log(RandUniform(1)) / ( mortality_const[gender] + mortality_TempPar[gender] * DailyAvgTemperature[report_time] + mortality_AgePar[gender] * AGE) ));
+	return death_event;
+}
+
+void TsetseFly::MortalityEvent()
+{
+	alive = FALSE;
+	Finish();
+}

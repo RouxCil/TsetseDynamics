@@ -41,7 +41,22 @@
     <None Include="Birth.mpp">
       <Filter>Modules %28mpp%29</Filter>
     </None>
-    <None Include="PupalDevelpoment.mpp">
+    <None Include="PupalDevelopment.mpp">
+      <Filter>Modules %28mpp%29</Filter>
+    </None>
+    <None Include="Mortality.mpp">
+      <Filter>Modules %28mpp%29</Filter>
+    </None>
+    <None Include="Marking.mpp">
+      <Filter>Modules %28mpp%29</Filter>
+    </None>
+    <None Include="Tracking.mpp">
+      <Filter>Modules %28mpp%29</Filter>
+    </None>
+    <None Include="Tables.mpp">
+      <Filter>Modules %28mpp%29</Filter>
+    </None>
+    <None Include="UserTable.mpp">
       <Filter>Modules %28mpp%29</Filter>
     </None>
   </ItemGroup>
@@ -67,7 +82,22 @@
     <ClCompile Include="Birth.cpp">
       <Filter>C++ Files</Filter>
     </ClCompile>
-    <ClCompile Include="PupalDevelpoment.cpp">
+    <ClCompile Include="PupalDevelopment.CPP">
+      <Filter>C++ Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Mortality.cpp">
+      <Filter>C++ Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Marking.cpp">
+      <Filter>C++ Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Tracking.cpp">
+      <Filter>C++ Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Tables.cpp">
+      <Filter>C++ Files</Filter>
+    </ClCompile>
+    <ClCompile Include="UserTable.cpp">
       <Filter>C++ Files</Filter>
     </ClCompile>
   </ItemGroup>
