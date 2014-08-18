@@ -1,0 +1,46 @@
+parameters 
+{
+	int		StartingPopulationSize;
+	double DailyAvgTemperature[REPORT_TIME];
+
+	double pupa_exp_const[GENDER];
+	double pupa_exp_TempPar[GENDER];
+	double pupa_numeric_constant[GENDER];
+
+	logical Switch_on_random_start;
+};
+
+actor_set Pupa asAllPupa;
+
+classification GENDER
+{
+	MALE,
+	FEMALE
+};
+
+actor Pupa
+{
+	int AGE = self_scheduling_int(age);
+	TIME adult_emerge = { TIME_INFINITE };
+
+	REPORT_TIME report_time = {0};
+	GENDER gender;
+	
+	void Start();
+	void Finish();
+	double ADULT_EMERGE( double current_time, double k, double a, double b );
+	
+	event timeAdultEmerge, AdultEmergeEvent;
+};
+
+void Pupa::Start()
+{
+	age = 0;
+	time;
+	gender = ( RandUniform(2) <= 0.5 ) ? FEMALE : MALE;
+	adult_emerge = WAIT( (TIME) ADULT_EMERGE(time, pupa_numeric_constant[gender], pupa_exp_const[gender], pupa_exp_TempPar[gender]) );
+}
+
+void Pupa::Finish()
+{
+}

@@ -102,6 +102,7 @@
     <None Include="ModelStrings.mpp" />
     <None Include="Mortality.mpp" />
     <None Include="parse.inf" />
+    <None Include="PupaCore.mpp" />
     <None Include="PupalDevelopment.mpp" />
     <None Include="ReadMe.txt" />
     <None Include="Tables.mpp" />
@@ -117,6 +118,7 @@
     <ClCompile Include="Marking.cpp" />
     <ClCompile Include="ModelStrings.cpp" />
     <ClCompile Include="Mortality.cpp" />
+    <ClCompile Include="PupaCore.cpp" />
     <ClCompile Include="PupalDevelopment.CPP" />
     <ClCompile Include="Tabinit.cpp" />
     <ClCompile Include="Tables.cpp" />

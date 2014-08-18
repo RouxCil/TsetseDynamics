@@ -34,6 +34,7 @@ void Simulation()
 	// Buffer for reporting progress
 	const size_t nBufSize = 255;
 	char szBuffer[nBufSize];
+	double max;
 
 	// Note replicate number for progress reporting
 	int nReplicate = GetReplicate();
@@ -48,8 +49,13 @@ void Simulation()
 
 	for ( int nJ = 0; nJ < StartingPopulationSize; nJ++ )
 	{
-		TsetseFly *paTsetseFly = new TsetseFly();
-		paTsetseFly->Start();
+		Pupa *paPupa = new Pupa();
+		paPupa->Start();
+		max = paPupa->adult_emerge;
+		if(Switch_on_random_start)
+		{
+			paPupa->adult_emerge = RandUniform(10)*max;
+		}
 	}
 
 	sprintf_s(szBuffer, nBufSize, "%s %d: %s", ModelString("S_MODEL_REPLICATE"), nReplicate, ModelString("S_MODEL_SIMULATION"));

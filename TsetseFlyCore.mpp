@@ -1,39 +1,61 @@
-parameters 
+parameters
 {
-	int		StartingPopulationSize;
-	double DailyAvgTemperature[ REPORT_TIME ];
+	double larva_const[LARVA_NR];
+	double larva_TempPar[LARVA_NR];
+	double offset;
+
+	double mortality_const[GENDER];
+	double mortality_TempPar[GENDER];
+	double mortality_AgePar[GENDER];
+	double alpha;
+
+	double capture_const[GENDER];
+	double capture_AgePar[GENDER];
+
+	logical Switch_on_reproduction;
 };
 
 actor_set TsetseFly asAllTsetseFly;
 
-classification GENDER
-{
-	PUPA_FEMALE,
-	PUPA_MALE,
-	ADULT_FEMALE,
-	ADULT_MALE
-};
-
 actor TsetseFly
 {
 	int AGE = self_scheduling_int(age);
+	logical alive = {TRUE};
+	int previousEventInterval = {-1};
+	int indexer = {1};
+	int nmarks = {0};
+	TIME next_larva_deposit = {TIME_INFINITE};
 
 	REPORT_TIME report_time = {0};
 	GENDER gender;
-	
-	void Start();
+	LARVA_NR first_larvae = {FIRST};
+	MARK mark1 = {never99};
+	MARK mark2 = {never99};
+	MARK mark3 = {never99};
+	MARK mark4 = {never99};
+	MARK mark5 = {never99};
+	MARK mark6 = {never99};
+	MARK mark7 = {never99};
+	MARK mark8 = {never99};
+	MARK mark9 = {never99};
+	MARK mark10 = {never99};
+		
+	void Start(GENDER p_gender);
 	void Finish();
+	double NEXT_LARVA_DEPOSIT(double current_time, double k1, double k2);
+	
+	event timeMortality, MortalityEvent;
+	event timeCapture, CaptureEvent;
+	event timeLarvalProductionEvent, LarvalProductionEvent;
 };
 
-void TsetseFly::Start()
+void TsetseFly::Start(GENDER p_gender)
 {
 	age = 0;
-	time;
-	gender = ( RandUniform(2) <= 0.5 ) ? PUPA_FEMALE : PUPA_MALE;
-
-	if (gender == PUPA_FEMALE || gender == PUPA_MALE)
+	gender = p_gender;
+	if(gender == FEMALE & Switch_on_reproduction )
 	{
-		adult_emerge = WAIT( (TIME) ADULT_EMERGE(report_time, pupa_numeric_constant[gender], pupa_exp_const[gender], pupa_exp_TempPar[gender]) );
+		next_larva_deposit = WAIT( (TIME) NEXT_LARVA_DEPOSIT( time, larva_const[first_larvae], larva_TempPar[first_larvae] ) );
 	}
 }
 

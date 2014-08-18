@@ -1,30 +1,3 @@
-parameters
-{
-	double capture_const[GENDER];
-	double capture_AgePar[GENDER];
-};
-
-actor TsetseFly
-{
-	logical markable = {FALSE};
-	int previousEventInterval = {-1};
-	int indexer = {1};
-	int nmarks = {0};
-
-	MARK mark1 = {never99};
-	MARK mark2 = {never99};
-	MARK mark3 = {never99};
-	MARK mark4 = {never99};
-	MARK mark5 = {never99};
-	MARK mark6 = {never99};
-	MARK mark7 = {never99};
-	MARK mark8 = {never99};
-	MARK mark9 = {never99};
-	MARK mark10 = {never99};
-	
-	event timeCapture, CaptureEvent;
-};
-
 partition TIMEGROUPS
 {
 	 7,14,21,28,35,42,49,56,63,70,77,84,91,98,105,112,119,126,133,140,147,154,161,168,175,182,189,196,203,210,217,224,231,238,245,252,259,266,273,280,287,294,301,308,315,322,329,336,343,350,357,364
@@ -42,10 +15,7 @@ classification MARK
 TIME TsetseFly::timeCapture()
 {
 	TIME next_mark_event = TIME_INFINITE;
-	if (markable == TRUE)
-	{
-		next_mark_event = WAIT((TIME) ( -log(RandUniform(3)) / ( capture_const[gender] + capture_AgePar[gender] * AGE) ));
-	}
+	next_mark_event = WAIT((TIME) ( -log(RandUniform(3)) / ( capture_const[gender] + capture_AgePar[gender] * AGE) ));
 	return next_mark_event;
 }
 

@@ -37,7 +37,6 @@ void Ticker::Start( )
 	time = (TIME) 0;
 	age = 0;
 	next_tick = 0;
-
 }
 
 
@@ -63,13 +62,19 @@ void Ticker::TickEvent()
 	report_time = COERCE(REPORT_TIME, report_time + 1);
 
 	// Age all TsetseFlys to the current time.
+	int nPupa = asAllPupa->Count();
+	for ( int nJ = 0; nJ < nPupa; nJ++ ) 
+	{
+		Pupa *paPupa = asAllPupa->Item( nJ );
+		paPupa->report_time = report_time;
+	}
+
 	int nTsetseFly = asAllTsetseFly->Count();
 	for ( int nJ = 0; nJ < nTsetseFly; nJ++ ) 
 	{
 		TsetseFly *paTsetseFly = asAllTsetseFly->Item( nJ );
 		paTsetseFly->report_time = report_time;
 	}
-
 	// Schedule the next tick.
 	// The next line spreads reporting times evenly over the simulation
 	//next_tick = next_tick + SIMULATION_END() / SIZE(REPORT_TIME);

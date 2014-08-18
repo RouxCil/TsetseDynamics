@@ -1,21 +1,19 @@
-parameters 
+double Survival_Function(int Age, double k1, double k2, double k3)
 {
-	double mortality_const[GENDER];
-	double mortality_TempPar[GENDER];
-	double mortality_AgePar[GENDER];
-};
+	double prop = exp(k1*(exp(-k2*Age) - exp(k3*Age)));
+	return prop;
+}
 
-actor TsetseFly
-{
-	logical alive = {TRUE};
-	
-	event timeMortalityEvent, MortalityEvent;
-};
-
-TIME TsetseFly::timeMortalityEvent()
+TIME TsetseFly::timeMortality()
 {
 	TIME death_event = TIME_INFINITE;
-	death_event = WAIT((TIME) ( -log(RandUniform(1)) / ( mortality_const[gender] + mortality_TempPar[gender] * DailyAvgTemperature[report_time] + mortality_AgePar[gender] * AGE) ));
+	double death_probability = 1 - Survival_Function(AGE + 1,  mortality_const[gender], mortality_TempPar[gender], mortality_AgePar[gender]) / Survival_Function(AGE,  mortality_const[gender], mortality_TempPar[gender], mortality_AgePar[gender]);
+	double random_number = RandUniform(1);
+	if(random_number < death_probability)
+	{
+		death_event = WAIT( (TIME) random_number/death_probability );
+	}
+
 	return death_event;
 }
 
