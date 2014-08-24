@@ -110,7 +110,6 @@
     <None Include="Tracking.mpp" />
     <None Include="TsetseDynamics.mpp" />
     <None Include="TsetseFlyCore.mpp" />
-    <None Include="UserTable.mpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Actors.cpp" />
@@ -126,7 +125,6 @@
     <ClCompile Include="Tracking.cpp" />
     <ClCompile Include="TsetseDynamics.cpp" />
     <ClCompile Include="TsetseFlyCore.cpp" />
-    <ClCompile Include="UserTable.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Actors.h" />

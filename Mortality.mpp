@@ -7,7 +7,7 @@ double Survival_Function(int Age, double k1, double k2, double k3, int current_r
 TIME TsetseFly::timeMortality()
 {
 	TIME death_event = TIME_INFINITE;
-	double death_probability = 1 - Survival_Function(AGE + 1,  mortality_const[gender], mortality_TempPar[gender], mortality_AgePar[gender], report_time) / Survival_Function(AGE,  mortality_const[gender], mortality_TempPar[gender], mortality_AgePar[gender], report_time);
+	double death_probability = 1 - Survival_Function(int_age + 1,  mortality_const[gender], mortality_TempPar[gender], mortality_AgePar[gender], report_time) / Survival_Function(int_age,  mortality_const[gender], mortality_TempPar[gender], mortality_AgePar[gender], report_time);
 	double random_number = RandUniform(1);
 	if(random_number < death_probability)
 	{

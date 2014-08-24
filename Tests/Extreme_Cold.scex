@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<Scenario ScenarioVersion="1.8">
-	<General SimulationEnd="300" Threads="1" Subsamples="1" PartialReports="0" StartingSeed="654859" ComputationPriority="THREAD_PRIORITY_BELOW_NORMAL" CancelPartialResults="PARTIAL_YES" BackgroundMode="0" SilentMode="0" DistributedExecution="0" DistributedSamples="1" AccessTracking="0" TextTracking="0" CopyParameters="1" MemoryReports="0"></General>
-	<Inputs>
-		<Input>.\Extreme_Cold(TsetseFlyCore).dat=C:\Users\Roux-Cil\Desktop\Masters File\Modgen\TsetseDynamics\Tests\Extreme_Cold(TsetseFlyCore).dat</Input>
-	</Inputs>
-</Scenario>

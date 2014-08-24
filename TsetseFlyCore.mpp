@@ -9,8 +9,7 @@ parameters
 	double mortality_AgePar[GENDER];
 	double alpha;
 
-	double capture_const[GENDER];
-	double capture_AgePar[GENDER];
+	double capture_const[GENDER][AGE_PART];
 
 	logical Switch_on_reproduction;
 };
@@ -19,7 +18,7 @@ actor_set TsetseFly asAllTsetseFly;
 
 actor TsetseFly
 {
-	int AGE = self_scheduling_int(age);
+	int int_age = self_scheduling_int(age);
 	logical alive = {TRUE};
 	logical markable;
 	logical cohort;
@@ -27,6 +26,8 @@ actor TsetseFly
 	int indexer = {1};
 	int nmarks = {0};
 	int number_pupa = {0};
+	int age_part = self_scheduling_split(age, AGE_PART);
+	double parm = capture_const[gender][age_part];
 	TIME next_larva_deposit = {TIME_INFINITE};
 	double time_at_birth;
 

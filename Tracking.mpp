@@ -1,6 +1,5 @@
 track TsetseFly
 {
-	gender,
 	mark1,
 	mark2,
 	mark3,
@@ -10,12 +9,5 @@ track TsetseFly
 	mark7,
 	mark8,
 	mark9,
-	mark10,
-	AGE,
-	next_larva_deposit,
-	report_time
-};
-track Pupa
-{
-	gender
+	mark10
 };

@@ -53,9 +53,6 @@
     <None Include="Tables.mpp">
       <Filter>Modules %28mpp%29</Filter>
     </None>
-    <None Include="UserTable.mpp">
-      <Filter>Modules %28mpp%29</Filter>
-    </None>
     <None Include="PupaCore.mpp">
       <Filter>Modules %28mpp%29</Filter>
     </None>
@@ -95,9 +92,6 @@
       <Filter>C++ Files</Filter>
     </ClCompile>
     <ClCompile Include="Tables.cpp">
-      <Filter>C++ Files</Filter>
-    </ClCompile>
-    <ClCompile Include="UserTable.cpp">
       <Filter>C++ Files</Filter>
     </ClCompile>
     <ClCompile Include="PupaCore.cpp">

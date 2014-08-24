@@ -7,6 +7,8 @@ parameters
 	double pupa_exp_TempPar[GENDER];
 	double pupa_numeric_constant[GENDER];
 
+	double pupa_mortality;
+
 	logical Switch_on_random_start;
 };
 
@@ -20,13 +22,12 @@ classification GENDER
 
 actor Pupa
 {
-	int AGE = self_scheduling_int(age);
 	TIME adult_emerge = { TIME_INFINITE };
 	logical alive = {TRUE};
 	logical cohort = {FALSE};
 	logical transition_adult = {FALSE};
 
-	REPORT_TIME report_time = {0};
+	REPORT_TIME report_time;
 	GENDER gender;
 	
 	void Start();
@@ -39,6 +40,7 @@ actor Pupa
 
 void Pupa::Start()
 {
+	report_time = int(time);
 	age = 0;
 	gender = ( RandUniform(2) <= 0.5 ) ? FEMALE : MALE;
 	adult_emerge = WAIT( (TIME) ADULT_EMERGE(time, pupa_numeric_constant[gender], pupa_exp_const[gender], pupa_exp_TempPar[gender]) );
