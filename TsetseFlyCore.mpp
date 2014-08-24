@@ -21,12 +21,16 @@ actor TsetseFly
 {
 	int AGE = self_scheduling_int(age);
 	logical alive = {TRUE};
+	logical markable;
+	logical cohort;
 	int previousEventInterval = {-1};
 	int indexer = {1};
 	int nmarks = {0};
+	int number_pupa = {0};
 	TIME next_larva_deposit = {TIME_INFINITE};
+	double time_at_birth;
 
-	REPORT_TIME report_time = {0};
+	REPORT_TIME report_time;
 	GENDER gender;
 	LARVA_NR first_larvae = {FIRST};
 	MARK mark1 = {never99};
@@ -40,7 +44,7 @@ actor TsetseFly
 	MARK mark9 = {never99};
 	MARK mark10 = {never99};
 		
-	void Start(GENDER p_gender);
+	void Start(GENDER p_gender, logical p_cohort);
 	void Finish();
 	double NEXT_LARVA_DEPOSIT(double current_time, double k1, double k2);
 	
@@ -49,10 +53,15 @@ actor TsetseFly
 	event timeLarvalProductionEvent, LarvalProductionEvent;
 };
 
-void TsetseFly::Start(GENDER p_gender)
+void TsetseFly::Start(GENDER p_gender, logical p_cohort)
 {
 	age = 0;
 	gender = p_gender;
+	cohort = p_cohort;
+	time_at_birth = time;
+	markable = ( int(time) >= 400 ) ? TRUE : FALSE;
+	report_time = int(time);
+
 	if(gender == FEMALE & Switch_on_reproduction )
 	{
 		next_larva_deposit = WAIT( (TIME) NEXT_LARVA_DEPOSIT( time, larva_const[first_larvae], larva_TempPar[first_larvae] ) );

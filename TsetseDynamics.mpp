@@ -51,10 +51,11 @@ void Simulation()
 	{
 		Pupa *paPupa = new Pupa();
 		paPupa->Start();
+		paPupa->cohort = TRUE;
 		max = paPupa->adult_emerge;
 		if(Switch_on_random_start)
 		{
-			paPupa->adult_emerge = RandUniform(10)*max;
+			paPupa->adult_emerge = RandUniform(4)*max;
 		}
 	}
 

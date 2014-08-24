@@ -11,9 +11,9 @@ TIME TsetseFly::timeLarvalProductionEvent()
 
 void TsetseFly::LarvalProductionEvent()
 {
+	number_pupa++;
 	Pupa *paPupa = new Pupa();
 	paPupa->Start();
-
 	first_larvae = SUBSEQUENT;
 	next_larva_deposit = WAIT( (TIME) NEXT_LARVA_DEPOSIT( time, larva_const[first_larvae], larva_TempPar[first_larvae] ) );
 }

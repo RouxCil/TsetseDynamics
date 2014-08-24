@@ -9,7 +9,7 @@
 
 range REPORT_TIME  //EN Reporting intervals
 {
-	0, 200
+	0, 770
 };
 
 actor Ticker //EN Actor for synchronising population-level activities
@@ -74,6 +74,10 @@ void Ticker::TickEvent()
 	{
 		TsetseFly *paTsetseFly = asAllTsetseFly->Item( nJ );
 		paTsetseFly->report_time = report_time;
+		if(int(time) == 400)
+		{
+			paTsetseFly->markable = TRUE;
+		}
 	}
 	// Schedule the next tick.
 	// The next line spreads reporting times evenly over the simulation

@@ -1,0 +1,1148 @@
+---
+title: "MochModel4 Tests"
+author: "Phillip Labuschagne"
+date: "Tuesday, July 22, 2014"
+output: html_document
+---
+
+# Setup and Run Model
+
+```{r Build Commands, include=FALSE, eval=FALSE}
+require(knitr) # required for knitting from rmd to md
+require(markdown) # required for md to html 
+knit('MochModel4Tests.Rmd', 'MochModel4Tests.md') # creates md file
+markdownToHTML('MochModel4Tests.md', 'MochModel4Tests.html') # creates html file
+browseURL(paste('file://', file.path(getwd(),'MochModel4Tests.html'), sep='')) # open file in browser
+```
+```{r Setup and Scenario Creation, include=FALSE}
+rm(list = ls())
+source('test_helpers.R')
+rerun_models <- FALSE
+#rerun_models <- TRUE
+options(scipen=999)
+library(modgenTester)
+library(knitr)
+library(plyr)
+library(survival)
+library(reshape2)
+library(survMisc)
+library(gridExtra)
+odbcCloseAll()
+opts_chunk$set(echo = FALSE)
+opts_chunk$set(fig.height = 10)
+opts_chunk$set(fig.width = 10)
+sd <- "C:/Users/Administrator/Documents/Visual Studio 2010/Projects/MochModel4"
+td <- "C:/Users/Administrator/Documents/Visual Studio 2010/Projects/MochModel4/test"
+setwd(td)
+
+copy_model(sd, 'MochModel4.exe', td)
+copy_scenario(sd, 'Base.scex', 'Base(MotherCore).dat', td)
+
+scenarios_to_create <- list(
+  '1' = list(test_folder = td, 
+             base_scenario = 'Base.scex', 
+             base_scenario_dat = 'Base(MotherCore).dat',
+             scenario_name_sub = list(from = 'Base', to = 'Small'), 
+             scex_sub = list(), 
+             dat_sub = list('1' = list(from = 'int\tStartingPopulationSize = 10000;',
+                                       to = 'int\tStartingPopulationSize = 1000;')
+                            )
+             ),
+  '2' = list(test_folder = td, 
+             base_scenario = 'Base.scex', 
+             base_scenario_dat = 'Base(MotherCore).dat',
+             scenario_name_sub = list(from = 'Base', to = 'NoHIV'), 
+             scex_sub = list(), 
+             dat_sub = list('1' = list(from = 'IncidenceMotherMultiplier = 1',
+                                       to = 'IncidenceMotherMultiplier = 0')
+                            )
+             ),
+  '5' = list(test_folder = td, 
+             base_scenario = 'Base.scex', 
+             base_scenario_dat = 'Base(MotherCore).dat',
+             scenario_name_sub = list(from = 'Base', to = 'OnlyInfectedMortality'), 
+             scex_sub = list(), 
+             dat_sub = list('1' = list(from = 'HealthyMortalityMotherMultiplier = 1',
+                                       to = 'HealthyMortalityMotherMultiplier = 0'),
+                            '2' = list(from = 'IncidenceMotherMultiplier = 1',
+                                       to = 'IncidenceMotherMultiplier = 3.5'),
+                            '3' = list(from = 'SymptomsMotherMultiplier = 1',
+                                       to = 'SymptomsMotherMultiplier = 0'),
+                            '4' = list(from = 'InfectedDiagnosisMotherMultiplier = 1',
+                                       to = 'InfectedDiagnosisMotherMultiplier = 0'),
+                            '5' = list(from = 'SymptomsDiagnosisMotherMultiplier = 1',
+                                       to = 'SymptomsDiagnosisMotherMultiplier = 0')
+                            )
+             ),
+  '6' = list(test_folder = td, 
+             base_scenario = 'Base.scex', 
+             base_scenario_dat = 'Base(MotherCore).dat',
+             scenario_name_sub = list(from = 'Base', to = 'AllInfectedNoMortality'), 
+             scex_sub = list(), 
+             dat_sub = list('1' = list(from = 'HealthyMortalityMotherMultiplier = 1',
+                                       to = 'HealthyMortalityMotherMultiplier = 0'),
+                            '2' = list(from = 'IncidenceMotherMultiplier = 1',
+                                       to = 'IncidenceMotherMultiplier = 3.5'),
+                            '3' = list(from = 'InfectedMortalityMotherMultiplier = 1',
+                                       to = 'InfectedMortalityMotherMultiplier = 0')
+                            )
+             ),
+  '8' = list(test_folder = td, 
+             base_scenario = 'Base.scex', 
+             base_scenario_dat = 'Base(MotherCore).dat',
+             scenario_name_sub = list(from = 'Base', to = 'WeibullTreatmentTransition'), 
+             scex_sub = list(), 
+             dat_sub = list('4' = list(from = 'TreatmentTransitionMotherSwitch = 1',
+                                       to = 'TreatmentTransitionMotherSwitch = 0'),
+                            '1' = list(from = 'HealthyMortalityMotherMultiplier = 1',
+                                       to = 'HealthyMortalityMotherMultiplier = 0'),
+                            '2' = list(from = 'IncidenceMotherMultiplier = 1',
+                                       to = 'IncidenceMotherMultiplier = 3.5'),
+                            '3' = list(from = 'InfectedMortalityMotherMultiplier = 1',
+                                       to = 'InfectedMortalityMotherMultiplier = 0')
+                           )
+             ),
+  '9' = list(test_folder = td, 
+             base_scenario = 'Base.scex', 
+             base_scenario_dat = 'Base(MotherCore).dat',
+             scenario_name_sub = list(from = 'Base', to = 'OnlyTreatedMortality'), 
+             scex_sub = list(), 
+             dat_sub = list('1' = list(from = 'HealthyMortalityMotherMultiplier = 1',
+                                       to = 'HealthyMortalityMotherMultiplier = 0'),
+                            '2' = list(from = 'IncidenceMotherMultiplier = 1',
+                                       to = 'IncidenceMotherMultiplier = 5'),
+                            '3' = list(from = 'SymptomsMotherMultiplier = 1',
+                                       to = 'SymptomsMotherMultiplier = 10'),
+                            '4' = list(from = 'InfectedDiagnosisMotherMultiplier = 1',
+                                       to = 'InfectedDiagnosisMotherMultiplier = 10'),
+                            '5' = list(from = 'SymptomsDiagnosisMotherMultiplier = 1',
+                                       to = 'SymptomsDiagnosisMotherMultiplier = 10'),
+                            '6' = list(from = 'TreatmentMotherMultiplier = 1',
+                                       to = 'TreatmentMotherMultiplier = 1000'),
+                            '7' = list(from = 'TreatmentCessationMotherMultiplier = 1',
+                                       to = 'TreatmentCessationMotherMultiplier = 0'),
+                            '8' = list(from = 'InfectedMortalityMotherMultiplier = 1',
+                                       to = 'InfectedMortalityMotherMultiplier = 0')
+                            )
+             ),
+  '10' = list(test_folder = td, 
+             base_scenario = 'Base.scex', 
+             base_scenario_dat = 'Base(MotherCore).dat',
+             scenario_name_sub = list(from = 'Base', to = 'OnlyStoppedMortality'), 
+             scex_sub = list(), 
+             dat_sub = list('1' = list(from = 'HealthyMortalityMotherMultiplier = 1',
+                                       to = 'HealthyMortalityMotherMultiplier = 0'),
+                            '2' = list(from = 'IncidenceMotherMultiplier = 1',
+                                       to = 'IncidenceMotherMultiplier = 3'),
+                            '3' = list(from = 'SymptomsMotherMultiplier = 1',
+                                       to = 'SymptomsMotherMultiplier = 10'),
+                            '4' = list(from = 'InfectedDiagnosisMotherMultiplier = 1',
+                                       to = 'InfectedDiagnosisMotherMultiplier = 10'),
+                            '5' = list(from = 'SymptomsDiagnosisMotherMultiplier = 1',
+                                       to = 'SymptomsDiagnosisMotherMultiplier = 10'),
+                            '6' = list(from = 'TreatmentMotherMultiplier = 1',
+                                       to = 'TreatmentMotherMultiplier = 1000'),
+                            '7' = list(from = 'TreatmentCessationMotherMultiplier = 1',
+                                       to = 'TreatmentCessationMotherMultiplier = 10'),
+                            '8' = list(from = 'InfectedMortalityMotherMultiplier = 1',
+                                       to = 'InfectedMortalityMotherMultiplier = 0'),
+                            '9' = list(from = 'TreatedMortalityMotherMultiplier = 1',
+                                       to = 'TreatedMortalityMotherMultiplier = 0')
+                            )
+             ),
+  '11' = list(test_folder = td, 
+             base_scenario = 'Base.scex', 
+             base_scenario_dat = 'Base(MotherCore).dat',
+             scenario_name_sub = list(from = 'Base', to = 'AllStopped'), 
+             scex_sub = list(), 
+             dat_sub = list('1' = list(from = 'HealthyMortalityMotherMultiplier = 1',
+                                       to = 'HealthyMortalityMotherMultiplier = 0'),
+                            '2' = list(from = 'IncidenceMotherMultiplier = 1',
+                                       to = 'IncidenceMotherMultiplier = 3'),
+                            '3' = list(from = 'SymptomsMotherMultiplier = 1',
+                                       to = 'SymptomsMotherMultiplier = 10'),
+                            '4' = list(from = 'InfectedDiagnosisMotherMultiplier = 1',
+                                       to = 'InfectedDiagnosisMotherMultiplier = 10'),
+                            '5' = list(from = 'SymptomsDiagnosisMotherMultiplier = 1',
+                                       to = 'SymptomsDiagnosisMotherMultiplier = 10'),
+                            '6' = list(from = 'TreatmentMotherMultiplier = 1',
+                                       to = 'TreatmentMotherMultiplier = 1000'),
+                            '8' = list(from = 'InfectedMortalityMotherMultiplier = 1',
+                                       to = 'InfectedMortalityMotherMultiplier = 0'),
+                            '9' = list(from = 'TreatedMortalityMotherMultiplier = 1',
+                                       to = 'TreatedMortalityMotherMultiplier = 0')
+                            )
+             ),
+  '12' = list(test_folder = td, 
+             base_scenario = 'Base.scex', 
+             base_scenario_dat = 'Base(MotherCore).dat',
+             scenario_name_sub = list(from = 'Base', to = 'AllInfectedNoSympNoMortExpDiag'), 
+             scex_sub = list(), 
+             dat_sub = list('1' = list(from = 'HealthyMortalityMotherMultiplier = 1',
+                                       to = 'HealthyMortalityMotherMultiplier = 0'),
+                            '2' = list(from = 'IncidenceMotherMultiplier = 1',
+                                       to = 'IncidenceMotherMultiplier = 3.5'),
+                            '3' = list(from = 'InfectedMortalityMotherMultiplier = 1',
+                                       to = 'InfectedMortalityMotherMultiplier = 0'),
+                            '4' = list(from = 'SymptomsMotherMultiplier = 1',
+                                       to = 'SymptomsMotherMultiplier = 0'),
+                            '5' = list(from = 'InfectedDiagnosisTransitionMotherSwitch = 1',
+                                       to = 'InfectedDiagnosisTransitionMotherSwitch = 0')
+                            )
+             )
+  )
+for (i in scenarios_to_create){
+  do.call(generate_scenario, i)
+}
+available_scenarios <- list_all_scenarios(td, FALSE)
+```
+```{r Run single scenario for testing, include=FALSE, eval=FALSE}
+#run_scenario(td, available_scenarios[[8]]$scex, td, 'MochModel4.exe')
+
+all_results <- list_all_results(td)
+
+db_channels <- list()
+for (i in all_results){
+  db_channel <- access_database(i)
+  scenario_name <- gsub("\\(.*$", "", gsub("^.*/", "", i))
+  db_channels[[scenario_name]] <- db_channel
+}
+```
+```{r Run Models and create connections, include=FALSE}
+library(foreach)
+library(doSNOW)
+ptm <- proc.time()
+cl <- makeCluster(6)
+clusterCall(cl, function() {
+  library(modgenTester)
+})
+clusterExport(cl, 'td')
+registerDoSNOW(cl)
+
+if (rerun_models){
+  foreach(scenario = available_scenarios) %dopar% {
+    run_scenario(td, scenario$scex,
+                 td, "MochModel4.exe")
+  }
+}
+#for (scenario in available_scenarios){
+#  print(scenario)
+#  run_scenario(td, scenario$scex,
+#               td, "MochModel4.exe")
+#}
+
+stopCluster(cl)
+all_results <- list_all_results(td)
+
+db_channels <- list()
+for (i in all_results){
+  db_channel <- access_database(i)
+  scenario_name <- gsub("\\(.*$", "", gsub("^.*/", "", i))
+  db_channels[[scenario_name]] <- db_channel
+}
+running_time <- proc.time() - ptm
+
+test_results <- list()
+
+ModelVersion <- as.data.frame(new_RTable("ModelVersion", db_channels$NoHIV))$Value[1]
+```
+```{r, results='asis'}
+if (!rerun_models){
+  cat("# WARNING MODELS WERE NOT RERUN \n")
+}
+```
+```{r Report on scenarios ran}
+print("Running Time")
+print(running_time)
+print("Number of Scenarios")
+print(length(db_channels))
+```
+
+# Tests for Model Version `r ModelVersion`
+
+Notes on the organization of the tests:
+- If a test involves a child in any way, it goes in the child section.
+- If a test involves only one transition, then it goes into that transition's section. This includes test that only test the effect of one parameter. If that parameter is specifically associated with only one transition, then the test goes there.
+- Any other test goes under the heading of the scenario it uses.
+- If a test does not fit any of these categories, dump it in the General section.
+
+## Mother - Transitions
+
+### Transition 1 - Death of Uninfected Mothers
+
+```{r No deaths from healthy in OnlyInfectedMortality, results='asis'}
+ctest_name <- 'No deaths from healthy in OnlyInfectedMortality'
+cscenarios <- 'OnlyInfectedMortality'
+test_results <- new_test(test_results,
+                         name = ctest_name,
+                         scenarios = cscenarios,
+                         description = "No mothers should die from the Healthy state in the OnlyInfectedMortality Scenario")
+```
+```{r}
+Mortality <- as.data.frame(new_RTable("MotherMortalityRates", db_channels[[cscenarios]]))
+deaths_in_healthy <- sum(subset(Mortality, metrics == "Number of deaths from HEALTHY state", select = 'Value')$Value)
+result <- deaths_in_healthy == 0
+print (ddply(Mortality, .(metrics), summarise, sum(Value)))
+```
+```{r, results='asis'}
+test_results <- new_result(test_results,
+                         name = ctest_name,
+                         result = result)
+rm('ctest_name', 'cscenarios', 'result')
+```
+
+
+```{r Healthy Mortality Match Inputs, results='asis'}
+ctest_name <- 'Healthy Mortality Match Inputs'
+cscenarios <- 'NoHIV'
+test_results <- new_test(test_results,
+                         name = ctest_name,
+                         scenarios = cscenarios,
+                         description = "When the kaplan meier curves of the healthy mortalities are compared to the input ASSA mortalities, then they must be similar. \n
+Note that the input parameters are not perfectly translated into a curve. This can be optimized in the future, but I believe it is good enough for a quick check.")
+```
+```{r, warning=FALSE, message=FALSE}
+med <- get_mother_time_to_event(db_channels[[cscenarios]])
+healthy_mort <- as.data.frame(new_PTable("HIVFreeMortality", db_channels[[cscenarios]]))
+model_time <- as.data.frame(new_PTable("ModelTime", db_channels[[cscenarios]]))[1,1]
+healthy_mort <- subset(healthy_mort, `ASSA model Time Range` == model_time &
+                                      GENDER == 'F')
+stopifnot(nrow(healthy_mort) >= 90)
+healthy_mort_function <- function(ages, healthy_mortality){
+  all_results <- numeric(0)
+  for (age in ages){
+    age_int <- floor(age)
+    if (age_int <= 0) { age <- 0}
+    y <- prod(1 - healthy_mortality[healthy_mortality$`Mortality Life Range` <= age_int,]$Value)
+    all_results <- c(all_results, y)
+  }
+  return(all_results)
+}
+
+p <- autoplot(survfit(Surv(time_to_event) ~ 1, med))$plot
+p <- p + labs(title = NULL) +
+    guides(col = guide_legend(nrow=2)) +
+    theme(legend.position = 'bottom')
+p <- p + stat_function(fun = healthy_mort_function, color = 'red', arg = list('healthy_mortality' = healthy_mort))
+print(p)
+
+result <- 'Manual'
+```
+```{r, results='asis'}
+test_results <- new_result(test_results,
+                         name = ctest_name,
+                         result = result)
+rm('ctest_name', 'cscenarios', 'result')
+```
+
+
+### Transition 2 - HIV Infection
+
+```{r Percentage ever infected zero in NoHIV, results='asis'}
+ctest_name <- 'Percentage ever infected zero in NoHIV'
+cscenarios <- 'NoHIV'
+test_results <- new_test(test_results,
+                         name = ctest_name,
+                         scenarios = cscenarios,
+                         description = "The number of mothers ever infected in the NoHIV case should be 0")
+```
+```{r}
+Incidence <- as.data.frame(new_RTable("MotherInfectionRates", db_channels$NoHIV))
+new_infections <- subset(Incidence, metrics == "Number of new infections", select = 'Value')$Value
+total_infections <- sum(new_infections)
+print(list(total_infections = total_infections))
+result <- total_infections == 0
+```
+```{r, results='asis'}
+test_results <- new_result(test_results,
+                         name = ctest_name,
+                         result = result)
+rm('ctest_name', 'cscenarios', 'result')
+```
+
+
+### Transition 3 - Death of Infected Mothers
+
+```{r No deaths from Infected in OnlyTreatedMortality, results='asis'}
+ctest_name <- 'No deaths from Infected in OnlyTreatedMortality'
+cscenarios <- 'OnlyTreatedMortality'
+test_results <- new_test(test_results,
+                         name = ctest_name,
+                         scenarios = cscenarios,
+                         description = "No mothers should die from the Infected state in the OnlyTreatedMortality Scenario")
+```
+```{r}
+Mortality <- as.data.frame(new_RTable("MotherMortalityRates", db_channels[[cscenarios]]))
+deaths_in_infected <- subset(Mortality, metrics == "Number of deaths from INFECTED state", select = 'Value')$Value
+stopifnot(length(deaths_in_infected) > 0)
+deaths_in_infected <- sum(deaths_in_infected)
+result <- deaths_in_infected == 0
+print (ddply(Mortality, .(metrics), summarise, sum(Value)))
+```
+```{r, results='asis'}
+test_results <- new_result(test_results,
+                         name = ctest_name,
+                         result = result)
+rm('ctest_name', 'cscenarios', 'result')
+```
+
+
+```{r Infected Mortality Match van der paal, results='asis'}
+ctest_name <- 'Infected Mortality Match van der paal'
+cscenarios <- 'OnlyInfectedMortality'
+test_results <- new_test(test_results,
+                         name = ctest_name,
+                         scenarios = cscenarios,
+                         description = "When the kaplan meier curves of the infected mortalities are fitted with Weibull curves, the parameters must be similar to those obtained from the van der paal article")
+```
+```{r}
+#' Returns 1 - the CDF of a weibull
+pweibull1m <- function(...){1 - pweibull(...)}
+
+#' Plots a survival curve and overlays a weibull CDF
+plot_one_vdp_cat <- function(dat, vdpa_input, phi, shape_input = 2.5, scale_input = 11.1123){
+  vdp_restricted <- subset(dat, vdpa_inf == vdpa_input)
+  p <- autoplot(survfit(Surv(time_to_event) ~ 1, vdp_restricted))$plot
+  p <- p + labs(title = paste0("VDP Age Cat: ", vdpa_input)) +
+    stat_function(fun = pweibull1m, arg = list(shape = shape_input, scale = scale_input * phi),
+                col = 'green') +
+    scale_colour_discrete(guide = FALSE)
+  return(p)
+}
+
+```
+```{r, warning=FALSE, message=FALSE}
+med <- get_mother_time_to_event(db_channels[[cscenarios]],
+                                start_event = 'Infection')
+med$vdpa_inf <- med$`Van der Paal Age category at infection`
+med <- subset(med, `Status at death` == 1 &
+                    vdpa_inf != 5)
+cat("Number of deaths by Van Der Paal Age category: \n")
+print(table(med$vdpa_inf))
+
+p <- autoplot(survfit(Surv(time_to_event) ~ vdpa_inf, med))$plot
+p <- p + labs(title = NULL) +
+    guides(col = guide_legend(nrow=2)) +
+    theme(legend.position = 'bottom')
+print(p)
+
+p <- arrangeGrob(
+plot_one_vdp_cat(med, 1, phi = 1.22398),
+plot_one_vdp_cat(med, 2, phi = 0.95143),
+plot_one_vdp_cat(med, 3, phi = 0.58661),
+plot_one_vdp_cat(med, 4, phi = 0.52447))
+print(p)
+result <- 'Manual'
+```
+```{r, results='asis'}
+test_results <- new_result(test_results,
+                         name = ctest_name,
+                         result = result)
+rm('ctest_name', 'cscenarios', 'result')
+```
+
+
+### Transition 4 - Development of Symptoms of HIV Infected Mothers
+
+```{r Symptom Rates Match van der paal, results='asis'}
+ctest_name <- 'Symptom Rates Match van der paal'
+cscenarios <- 'AllInfectedNoMortality'
+test_results <- new_test(test_results,
+                         name = ctest_name,
+                         scenarios = cscenarios,
+                         description = "When the kaplan meier curves of the symptom rates are fitted with Weibull curves, the parameters must be similar to those obtained from the van der paal article")
+```
+```{r, warning=FALSE, message=FALSE}
+med <- get_mother_time_to_event(db_channels[[cscenarios]],
+                                start_event = 'Infection',
+                                end_event = 'Symptoms')
+med$vdpa_inf <- med$`Van der Paal Age category at infection`
+med <- subset(med, time_to_event > 0 &
+                    vdpa_inf != 5)
+cat("Number of deaths by Van Der Paal Age category: \n")
+print(table(med$vdpa_inf))
+
+p <- autoplot(survfit(Surv(time_to_event) ~ vdpa_inf, med))$plot
+p <- p + labs(title = NULL) +
+    guides(col = guide_legend(nrow=2)) +
+    theme(legend.position = 'bottom')
+print(p)
+
+p <- arrangeGrob(
+plot_one_vdp_cat(med, 1, shape_input = 1.5101, scale_input = 7.5251, phi = 1.22398),
+plot_one_vdp_cat(med, 2, shape_input = 1.5101, scale_input = 7.5251, phi = 0.95143),
+plot_one_vdp_cat(med, 3, shape_input = 1.5101, scale_input = 7.5251, phi = 0.58661),
+plot_one_vdp_cat(med, 4, shape_input = 1.5101, scale_input = 7.5251, phi = 0.52447))
+print(p)
+result <- 'Manual'
+```
+```{r, results='asis'}
+test_results <- new_result(test_results,
+                         name = ctest_name,
+                         result = result)
+rm('ctest_name', 'cscenarios', 'result')
+```
+
+
+### Transition 5 - Diagnosis of Asymptomatic Mothers
+```{r Asymptomatic Weibull Diagnosis Rates matches inputs, results='asis'}
+ctest_name <- 'Asymptomatic Weibull Diagnosis Rates matches inputs'
+cscenarios <- 'AllInfectedNoSympNoMortExpDiag'
+test_results <- new_test(test_results,
+                         name = ctest_name,
+                         scenarios = cscenarios,
+                         description = "When the kaplan meier curves of the asymptomatic diagnosis rates are compared to the input values, they should look similar")
+```
+```{r, warning=FALSE, message=FALSE}
+med <- get_mother_time_to_event(db_channels[[cscenarios]],
+                                start_event = 'Infection',
+                                end_event = 'Diagnosis')
+med <- subset(med, time_to_event > 0 &
+                    `Age at Infection` > 0 &
+                    `Age at Symptoms` < `Age at Diagnosis`)
+
+p <- autoplot(survfit(Surv(time_to_event) ~ 1, med))$plot
+p <- p + labs(title = NULL) +
+    guides(col = guide_legend(nrow=2)) +
+    theme(legend.position = 'bottom')
+print(p)
+cat("  \n")
+cat(paste0("Mean time till diagnosis from onset of symptoms: ", mean(med$time_to_event), ". \n"))
+result <- 'Manual'
+```
+```{r, results='asis'}
+test_results <- new_result(test_results,
+                         name = ctest_name,
+                         result = result)
+rm('ctest_name', 'cscenarios', 'result')
+```
+
+
+```{r Asymptomatic Percentage Diagnosis Rates matches inputs, results='asis'}
+ctest_name <- 'Asymptomatic Percentage Diagnosis Rates matches inputs'
+cscenarios <- 'Base'
+test_results <- new_test(test_results,
+                         name = ctest_name,
+                         scenarios = cscenarios,
+                         description = "The percentage of mothers who become diagnosed while asymptomatic must match the input rate. \n
+In the current setup, the ratio from the base scenario mst be between 0.38 and 0.42. The input value is 0.4")
+```
+```{r, warning=FALSE, message=FALSE}
+diagnosis <- as.data.frame(new_RTable("MotherAsymptomaticDiagnosisRates", db_channels[[cscenarios]]))[,1:3]
+diagnosis <- dcast(diagnosis, Age ~ metrics)
+infected_mothers <- sum(diagnosis$`Number of new infected mothers`)
+diagnosed_mothers <- sum(diagnosis$`Number of new diagnosed mothers`)
+ratio <- diagnosed_mothers / infected_mothers
+print(list('infected mothers' = infected_mothers,
+           'diagnosed mothers' = diagnosed_mothers,
+           'ratio' = ratio))
+result <- ratio > 0.38 & ratio < 0.42
+```
+```{r, results='asis'}
+test_results <- new_result(test_results,
+                         name = ctest_name,
+                         result = result)
+rm('ctest_name', 'cscenarios', 'result')
+```
+
+
+### Transition 6 - Diagnosis of Symptomatic Mothers
+```{r Symptomatic Diagnosis Rates matches inputs, results='asis'}
+ctest_name <- 'Symptomatic Diagnosis Rates matches inputs'
+cscenarios <- 'AllInfectedNoMortality'
+test_results <- new_test(test_results,
+                         name = ctest_name,
+                         scenarios = cscenarios,
+                         description = "When the kaplan meier curves of the symptomatic diagnosis rates are compared to the input values, they should look similar")
+```
+```{r, warning=FALSE, message=FALSE}
+med <- get_mother_time_to_event(db_channels[[cscenarios]],
+                                start_event = 'Symptoms',
+                                end_event = 'Diagnosis')
+med <- subset(med, time_to_event > 0 &
+                    `Age at Infection` > 0 &
+                    `Age at Symptoms` < `Age at Diagnosis`)
+
+p <- autoplot(survfit(Surv(time_to_event) ~ 1, med))$plot
+p <- p + labs(title = NULL) +
+    guides(col = guide_legend(nrow=2)) +
+    theme(legend.position = 'bottom')
+print(p)
+cat("  \n")
+cat(paste0("Mean time till diagnosis from onset of symptoms: ", mean(med$time_to_event), ". \n"))
+
+result <- 'Manual'
+```
+```{r, results='asis'}
+test_results <- new_result(test_results,
+                         name = ctest_name,
+                         result = result)
+rm('ctest_name', 'cscenarios', 'result')
+```
+
+
+### Transition 7 - Treatment rate of Eligible Mothers
+
+```{r Treatment Rates matches inputs, results='asis'}
+ctest_name <- 'Treatment Rates matches inputs'
+cscenarios <- c('AllInfectedNoMortality', 'WeibullTreatmentTransition')
+test_results <- new_test(test_results,
+                         name = ctest_name,
+                         scenarios = cscenarios,
+                         description = "When the kaplan meier curves of the treatment rates are compared to the input values, they should look similar. \n
+When the treatment coverage rate approach is used to assign treatment, it should be a step function with the majority of the transitions happening at time 0.01. Then much smaller steps at 1.01, 2.01, .... (depending on how the treeatment coverage rate fluctuates) \n
+If the weibull transition is used, then the KM curve should look like a weibull curve.")
+```
+```{r, warning=FALSE, message=FALSE}
+for (cscenario in cscenarios){
+  print(cscenario)
+  med <- get_mother_time_to_event(db_channels[[cscenario]],
+                                  start_event = 'Diagsymp',
+                                  end_event = 'Treatment')
+  med <- subset(med, time_to_event > 0 &
+                      `Age at Infection` > 0)
+  
+  p <- autoplot(survfit(Surv(time_to_event) ~ 1, med))$plot
+  p <- p + labs(title = NULL) +
+      guides(col = guide_legend(nrow=2)) +
+      theme(legend.position = 'bottom')
+  print(p)
+  cat("  \n")
+  cat(paste0("Mean time till treatment from Eligibility and diagnosis: ", mean(med$time_to_event), ". \n"))
+  cat("  \n")
+}
+
+result <- 'Manual'
+```
+```{r, results='asis'}
+test_results <- new_result(test_results,
+                         name = ctest_name,
+                         result = result)
+rm('ctest_name', 'cscenarios', 'result')
+```
+
+
+```{r Treatment chance is assigned as expected,  results='asis'}
+ctest_name <- 'Treatment chance is assigned as expected'
+cscenarios <- 'Base'
+test_results <- new_test(test_results,
+                         name = ctest_name,
+                         scenarios = cscenarios,
+                         description = "The treatment chance must be a random uniform number. Min between 0 and 0.05, Max between 0.95 and 1, Mean between 0.475 and 0.525")
+```
+```{r, warning=FALSE, message=FALSE}
+MotherTreatmentChance <- as.data.frame(new_RTable("MotherTestForTreatmentChance", db_channels$NoHIV))
+minv <- subset(MotherTreatmentChance, 
+            metrics == "Minimum Treatment Chance", 
+            select = 'Value')[1,1]
+maxv <- subset(MotherTreatmentChance, 
+            metrics == "Maximum Treatment Chance", 
+            select = 'Value')[1,1]
+avgv <- subset(MotherTreatmentChance, 
+            metrics == "Average Treatment Chance", 
+            select = 'Value')[1,1]
+
+print(list('Min' = minv,
+           'Max' = maxv,
+           'Avg' = avgv))
+
+result <- (minv > 0) & (minv < 0.05) & (maxv > 0.95) & (maxv < 1) & (avgv > 0.475) & (avgv < 0.525) 
+```
+```{r, results='asis'}
+test_results <- new_result(test_results,
+                         name = ctest_name,
+                         result = result)
+rm('ctest_name', 'cscenarios', 'result')
+```
+
+
+```{r Treatment Coverage Rate Coverage Based Transition, results='asis'}
+ctest_name <- 'Treatment Coverage Rate Coverage Based Transition'
+cscenarios <- c('AllInfectedNoMortality', 'WeibullTreatmentTransition')
+test_results <- new_test(test_results,
+                         name = ctest_name,
+                         scenarios = cscenarios,
+                         description = "Plots showing the treatment coverage rates. \n
+The line shows how many mothers started treatment at a given age vs how many mothers became eligible at a given age. \n
+If the weibull transition is used, then the line should increase with age since the probability of going on treatment increases with time spent in the eligible state. \n
+If the Treatment coverage rate transition is used, then the line must reflect the treatment coverage rate for the given age. Note that the variability increases drastically as the number of mothers who become eligible decreases.")
+```
+```{r, warning=FALSE, message=FALSE}
+for (cscenario in cscenarios){
+  print(cscenario)
+  MotherTreatmentRates <- as.data.frame(new_RTable("MotherTreatmentRates", db_channels[[cscenario]]))[,1:3]
+  mtr <- dcast(MotherTreatmentRates, Age ~ metrics)
+  mtr$`Started vs Became Eligible` <- mtr$`Number of newly treated mothers` / mtr$`Newly eligible mothers`
+  
+  mmtr <- melt(mtr, id.vars = 'Age')
+  mmtr <- subset(mmtr, variable %in% c('Started vs Became Eligible'))
+  p <- ggplot(mmtr, aes(x = Age, y = value)) +
+    geom_line() + 
+    scale_y_continuous(limits = c(-0.1, 4))
+  print(p)
+}
+result <- "Manual"
+```
+```{r, results='asis'}
+test_results <- new_result(test_results,
+                         name = ctest_name,
+                         result = result)
+rm('ctest_name', 'cscenarios', 'result')
+```
+
+
+### Transition 8 - Death of Treated Mothers
+
+```{r Treated Mortality Match Inputs, results='asis'}
+ctest_name <- 'Treated Mortality Match Inputs'
+cscenarios <- 'OnlyTreatedMortality'
+test_results <- new_test(test_results,
+                         name = ctest_name,
+                         scenarios = cscenarios,
+                         description = "When the kaplan meier curves of the treated mortalities are compared to the input ASSA mortalities, then they must be similar. \n
+Something does not look right. The deviation between the lines are too large. Also the spike in mortality in the data centered at age 75 is troublesome.")
+```
+```{r, warning=FALSE, message=FALSE}
+med <- get_mother_time_to_event(db_channels[[cscenarios]],
+                                start_event = 'Treatment')
+mort_treat_b6m <- as.data.frame(new_PTable("TreatedMortalityMotherb6m", db_channels[[cscenarios]]))[1,1]
+mort_treat_a6m <- as.data.frame(new_PTable("TreatedMortalityMothera6m", db_channels[[cscenarios]]))[1,1]
+treated_mort_function <- function(ages, mort_b6m, mort_a6m){
+  all_results <- numeric(0)
+  for (age in ages){
+    if (age <= 0){
+      y <- 1
+    } else if (age <= 0.5){
+      y <- (1-mort_b6m)^age
+    } else if (age > 0.5){
+      new_age <- age - 0.5
+      y <- (1 - mort_b6m)^0.5 * (1 - mort_a6m)^new_age
+    }
+    all_results <- c(all_results, y)
+  }
+  return(all_results)
+}
+p <- autoplot(survfit(Surv(time_to_event) ~ 1, med))$plot
+p <- p + labs(title = NULL) +
+    guides(col = guide_legend(nrow=2)) +
+    theme(legend.position = 'bottom')
+p <- p + stat_function(fun = treated_mort_function, color = 'red', arg = list('mort_b6m' = mort_treat_b6m,
+                                                                              'mort_a6m' = mort_treat_a6m))
+print(p)
+
+result <- FALSE
+```
+```{r, results='asis'}
+test_results <- new_result(test_results,
+                         name = ctest_name,
+                         result = result)
+rm('ctest_name', 'cscenarios', 'result')
+```
+
+
+```{r No deaths from Treated in OnlyStoppedMortality, results='asis'}
+ctest_name <- 'No deaths from Treated in OnlyStoppedMortality'
+cscenarios <- 'OnlyStoppedMortality'
+test_results <- new_test(test_results,
+                         name = ctest_name,
+                         scenarios = cscenarios,
+                         description = "No mothers should die from the Treated state in the OnlyStoppedMortality Scenario")
+```
+```{r}
+Mortality <- as.data.frame(new_RTable("MotherMortalityRates", db_channels[[cscenarios]]))
+deaths_in_treated <- subset(Mortality, metrics == "Number of deaths from TREATED state", select = 'Value')$Value
+stopifnot(length(deaths_in_treated) > 0)
+deaths_in_treated <- sum(deaths_in_treated)
+result <- deaths_in_treated == 0
+print (ddply(Mortality, .(metrics), summarise, sum(Value)))
+```
+```{r, results='asis'}
+test_results <- new_result(test_results,
+                         name = ctest_name,
+                         result = result)
+rm('ctest_name', 'cscenarios', 'result')
+```
+
+
+### Transition 9 - Treatment cessation
+
+```{r Treatment Cessation Rates matches inputs, results='asis'}
+ctest_name <- 'Treatment Cessation Rates matches inputs'
+cscenarios <- 'AllStopped'
+test_results <- new_test(test_results,
+                         name = ctest_name,
+                         scenarios = cscenarios,
+                         description = "When the kaplan meier curves of the treatment stoppage rates are compared to the input values, they should look similar. \n
+Something is not right. It needs to be debugged.")
+```
+```{r, warning=FALSE, message=FALSE}
+cease_treat_b6m <- as.data.frame(new_PTable("TreatmentCessationMotherb6m", db_channels[[cscenarios]]))[1,1]
+cease_treat_a6m <- as.data.frame(new_PTable("TreatmentCessationMothera6m", db_channels[[cscenarios]]))[1,1]
+med <- get_mother_time_to_event(db_channels[[cscenarios]],
+                                start_event = 'Treatment',
+                                end_event = 'Treatment Cessation')
+med <- subset(med, time_to_event > 0 &
+                    `Age at Treatment` > 0)
+
+p <- autoplot(survfit(Surv(time_to_event) ~ 1, med))$plot
+p <- p + labs(title = NULL) +
+    guides(col = guide_legend(nrow=2)) +
+    theme(legend.position = 'bottom')
+p <- p + stat_function(fun = treated_mort_function, color = 'red', arg = list('mort_b6m' = cease_treat_b6m,
+                                                                              'mort_a6m' = cease_treat_a6m))
+print(p)
+cat("  \n")
+cat(paste0("Mean time till treatment cessarion from treatment: ", mean(med$time_to_event), ". \n"))
+
+result <- FALSE
+```
+```{r, results='asis'}
+test_results <- new_result(test_results,
+                         name = ctest_name,
+                         result = result)
+rm('ctest_name', 'cscenarios', 'result')
+```
+
+
+### Transition 10 - Death of Stopped Mothers
+
+```{r Stopped Mortality Match Inputs, results='asis'}
+ctest_name <- 'Stopped Mortality Match Inputs'
+cscenarios <- 'OnlyStoppedMortality'
+test_results <- new_test(test_results,
+                         name = ctest_name,
+                         scenarios = cscenarios,
+                         description = "When the kaplan meier curves of the stopped mortalities are compared to the input ASSA mortalities, then they must be similar.")
+```
+```{r, warning=FALSE, message=FALSE}
+med <- get_mother_time_to_event(db_channels[[cscenarios]],
+                                start_event = 'Treatment Cessation')
+med$vdpa_inf <- med$`Van der Paal Age category at infection`
+med <- subset(med, `Status at death` == 3 &
+                    vdpa_inf != 5)
+cat("Number of deaths by Van Der Paal Age category: \n")
+print(table(med$vdpa_inf))
+
+p <- autoplot(survfit(Surv(time_to_event) ~ vdpa_inf, med))$plot
+p <- p + labs(title = NULL) +
+    guides(col = guide_legend(nrow=2)) +
+    theme(legend.position = 'bottom')
+print(p)
+
+p <- arrangeGrob(
+plot_one_vdp_cat(med, 1, shape_input = 1, scale_input = 1.69, phi = 1),
+plot_one_vdp_cat(med, 2, shape_input = 1, scale_input = 1.69, phi = 0.8579882),
+plot_one_vdp_cat(med, 3, shape_input = 1, scale_input = 1.69, phi = 0.7159763),
+plot_one_vdp_cat(med, 4, shape_input = 1, scale_input = 1.69, phi = 0.7159763))
+print(p)
+result <- 'Manual'
+```
+```{r, results='asis'}
+test_results <- new_result(test_results,
+                         name = ctest_name,
+                         result = result)
+rm('ctest_name', 'cscenarios', 'result')
+```
+
+
+## Mother - Scenarios
+
+### Base
+
+```{r Life Expectancy Healthy Mother, results='asis'}
+ctest_name <- 'Life Expectancy Healthy Mother'
+cscenarios <- 'NoHIV'
+test_results <- new_test(test_results, 
+                         name = ctest_name,
+                         scenarios = cscenarios,
+                         description = "In the case of no sickness, we expect the mother's life expectancy to be between 60 and 70")
+```
+```{r}
+DurationOfLife <- as.data.frame(new_RTable("MotherDurationOfLife", db_channels$NoHIV))
+print(DurationOfLife)
+x <- subset(DurationOfLife, 
+            metrics == "Life expectancy", 
+            select = 'Value')[1,1]
+result <- x > 60 & x < 70
+```
+```{r, results='asis'}
+test_results <- new_result(test_results,
+                         name = ctest_name,
+                         result = result)
+rm('ctest_name', 'cscenarios', 'result')
+```
+
+
+```{r Percentage ever infected bounded, results='asis'}
+ctest_name <- 'Percentage ever infected bounded'
+cscenarios <- 'Base'
+test_results <- new_test(test_results,
+                         name = ctest_name,
+                         scenarios = cscenarios,
+                         description = "The percentage of mothers ever infected in the base case should be between 40 and 50%")
+```
+```{r}
+Incidence <- as.data.frame(new_RTable("MotherInfectionRates", db_channels$Base))
+new_infections <- subset(Incidence, metrics == "Number of new infections", select = 'Value')$Value
+total_infections <- sum(new_infections)
+total_population <- get_mother_population_size(db_channels$Base)
+percentage_ever_infected <- total_infections / total_population
+print(list(total_infections = total_infections,
+           total_population = total_population))
+result <- percentage_ever_infected > 0.4 & percentage_ever_infected < 0.5
+```
+```{r, results='asis'}
+test_results <- new_result(test_results,
+                         name = ctest_name,
+                         result = result)
+rm('ctest_name', 'cscenarios', 'result')
+```
+
+
+```{r Infected vs Healthy Mortality, results='asis'}
+ctest_name <- 'Infected vs Healthy Mortality'
+cscenarios <- 'Base'
+test_results <- new_test(test_results,
+                         name = ctest_name,
+                         scenarios = cscenarios,
+                         description = "The mortality of uninfected mothers must be lower than the mortality of uninfected mothers. Mortality is tricky to measure accurately thus a proxy is used. Total deaths from state is compared to the total years spent in the state for each state. Further refinements should be made to this test")
+```
+```{r}
+Mortality <- as.data.frame(new_RTable("MotherMortalityRates", db_channels[[cscenarios]]))
+total_time_in_healthy <- sum(subset(Mortality, metrics == "Healthy mother years at risk", select = 'Value')$Value)
+total_time_in_infected <- sum(subset(Mortality, metrics == "Infected mother years at risk", select = 'Value')$Value)
+deaths_in_healthy <- sum(subset(Mortality, metrics == "Number of deaths from HEALTHY state", select = 'Value')$Value)
+deaths_in_infected <- sum(subset(Mortality, metrics == "Number of deaths from INFECTED state", select = 'Value')$Value)
+crude_healthy_mortality <- deaths_in_healthy / total_time_in_healthy
+crude_infected_mortality <- deaths_in_infected / total_time_in_infected
+
+print(list(
+total_time_in_healthy = total_time_in_healthy,
+total_time_in_infected = total_time_in_infected,
+deaths_in_healthy = deaths_in_healthy,
+deaths_in_infected = deaths_in_infected,
+crude_healthy_mortality = crude_healthy_mortality,
+crude_infected_mortality = crude_infected_mortality 
+))
+result <- crude_healthy_mortality < crude_infected_mortality
+```
+```{r, results='asis'}
+test_results <- new_result(test_results,
+                         name = ctest_name,
+                         result = result)
+rm('ctest_name', 'cscenarios', 'result')
+```
+
+
+```{r Percentage ever symptomatic bounded, results='asis'}
+ctest_name <- 'Percentage ever symptomatic bounded'
+cscenarios <- 'Base'
+test_results <- new_test(test_results,
+                         name = ctest_name,
+                         scenarios = cscenarios,
+                         description = "The percentage of mothers who ever became symptomatic in the base case should be between 30 and 34%")
+```
+```{r}
+SymptomRates <- as.data.frame(new_RTable("MotherSymptomRates", db_channels[[cscenarios]]))
+new_symptomatic_mothers <- subset(SymptomRates, metrics == "Number of new symptomatic mothers", select = 'Value')$Value
+total_symptomatic_mothers <- sum(new_symptomatic_mothers)
+total_population <- get_mother_population_size(db_channels$Base)
+percentage_ever_symptomatic <- total_symptomatic_mothers / total_population
+print(list(total_symptomatic_mothers = total_symptomatic_mothers,
+           total_population = total_population))
+result <- percentage_ever_symptomatic > 0.30 & percentage_ever_symptomatic < 0.34
+```
+```{r, results='asis'}
+test_results <- new_result(test_results,
+                         name = ctest_name,
+                         result = result)
+rm('ctest_name', 'cscenarios', 'result')
+```
+
+
+### OnlyInfectedMortality
+
+```{r OnlyInfectedMortality scenario has most people dying from infected state, results='asis'}
+ctest_name <- 'OnlyInfectedMortality scenario has most people dying from infected state'
+cscenarios <- 'OnlyInfectedMortality'
+test_results <- new_test(test_results,
+                         name = ctest_name,
+                         scenarios = cscenarios,
+                         description = "This test make sure that in the scenario where there is only mortality in the infected state, that all people who die before age 100, die from the infected state")
+```
+```{r, warning=FALSE, message=FALSE}
+Mortality <- as.data.frame(new_RTable("MotherMortalityRates", db_channels[[cscenarios]]))
+deaths_in_infected <- sum(subset(Mortality, metrics == "Number of deaths from INFECTED state", select = 'Value')$Value)
+print(deaths_in_infected)
+mdd <- as.data.frame(new_RTable("MotherEventDetails", db_channels[[cscenarios]]))[,1:3]
+mdd <- dcast(mdd, `split( actor_id, ACTOR_ID )` ~ metrics)
+print(table(mdd$`Status at death`))
+result <- deaths_in_infected > 8000
+```
+```{r, results='asis'}
+test_results <- new_result(test_results,
+                         name = ctest_name,
+                         result = result)
+rm('ctest_name', 'cscenarios', 'result')
+```
+
+
+## Mother - General
+
+```{r Mother Max Age, results='asis'}
+# TODO: Check on all scenarios not just base
+ctest_name <- 'Mother Max Age'
+cscenarios <- 'Base'
+test_results <- new_test(test_results,
+                         name = ctest_name,
+                         scenarios = cscenarios,
+                         description = "The max age of a mother cannot be greater than 92. This is failing because the old people's mortality on treatment and STOPPED is not correctly implemented from ASSA model")
+```
+```{r}
+DurationOfLife <- as.data.frame(new_RTable("MotherDurationOfLife", db_channels$Base))
+print(DurationOfLife)
+x <- subset(DurationOfLife, 
+            metrics == "Maximum duration of life", 
+            select = 'Value')
+result <- x <= 92
+```
+```{r, results='asis'}
+test_results <- new_result(test_results,
+                         name = ctest_name,
+                         result = result)
+rm('ctest_name', 'cscenarios', 'result')
+```
+
+
+```{r All survival curves, results='asis'}
+ctest_name <- 'All survival curves'
+cscenarios <- 'Base'
+test_results <- new_test(test_results,
+                         name = ctest_name,
+                         scenarios = cscenarios,
+                         description = "Currently broken - Must add censoring to the KM curves. Plots of all the survival curves. The curves must be inspected manually. Only add those states that directly affect the scehduling og mortality, otherwise this plot will become to cluttered.")
+```
+```{r, warning=FALSE, message=FALSE}
+med <- get_mother_time_to_event(db_channels[[cscenarios]])
+all_survival_data <- data.frame(age_at_death = med$time_to_event,
+                                group = 'All: Time since birth')
+
+med <- subset(med, `Status at death` == 1)
+all_survival_data <- rbind(all_survival_data,
+                           data.frame(age_at_death = med$time_to_event,
+                                      group = 'Infected: Time since birth'))
+med <- get_mother_time_to_event(db_channels[[cscenarios]],
+                                start_event = 'Infection')
+med <- subset(med, `Status at death` == 1)
+all_survival_data <- rbind(all_survival_data,
+                           data.frame(age_at_death = med$time_to_event,
+                                      group = 'Infected: Time since infection'))
+
+med <- get_mother_time_to_event(db_channels[[cscenarios]])
+med <- subset(med, `Status at death` == 2)
+all_survival_data <- rbind(all_survival_data,
+                           data.frame(age_at_death = med$time_to_event,
+                                      group = 'Treated: Time since birth'))
+med <- get_mother_time_to_event(db_channels[[cscenarios]],
+                                start_event = 'Treatment')
+med <- subset(med, `Status at death` == 2)
+all_survival_data <- rbind(all_survival_data,
+                           data.frame(age_at_death = med$time_to_event,
+                                      group = 'Treated: Time since treatment'))
+
+med <- get_mother_time_to_event(db_channels[[cscenarios]])
+med <- subset(med, `Status at death` == 3)
+all_survival_data <- rbind(all_survival_data,
+                           data.frame(age_at_death = med$time_to_event,
+                                      group = 'Stopped: Time since birth'))
+med <- get_mother_time_to_event(db_channels[[cscenarios]],
+                                start_event = 'Treatment Cessation')
+med <- subset(med, `Status at death` == 3)
+all_survival_data <- rbind(all_survival_data,
+                           data.frame(age_at_death = med$time_to_event,
+                                      group = 'Stopped: Time since treatment cessation'))
+
+p <- autoplot(survfit(Surv(age_at_death) ~ group, all_survival_data))$plot
+p <- p + labs(title = NULL) +
+    guides(col = guide_legend(nrow=4)) +
+    theme(legend.position = 'bottom')
+print(p)
+```
+```{r, results='asis'}
+test_results <- new_result(test_results,
+                         name = ctest_name,
+                         result = 'Manual')
+rm('ctest_name', 'cscenarios')
+```
+
+
+```{r MDEATH_SCHED State Membership tracking, results='asis'}
+ctest_name <- 'MDEATH_SCHED State Membership tracking'
+cscenarios <- 'All'
+test_results <- new_test(test_results,
+                         name = ctest_name,
+                         scenarios = cscenarios,
+                         description = "Plots showing the membership of mothers to the different states in the MDEATH_SCHED_STATE")
+```
+```{r}
+#' Produces a plot showing the membership in the different states overtime
+plot_state_membership <- function(source_table){
+  all_membership <- NULL
+  for (scenario_name in names(db_channels)){
+  	StateMembership <- as.data.frame(new_RTable(source_table, db_channels[[scenario_name]]))
+    StateMembership$scenario <- scenario_name
+    all_membership <- rbind(all_membership,
+                            StateMembership)
+  }
+  
+  p <- ggplot(all_membership, aes(x = Age, y = Value, colour = metrics)) + 
+      geom_line() +
+      guides(col = guide_legend(ncol=2)) +
+      theme(legend.position = 'bottom') + 
+      labs(title = paste0("Scenario: ", scenario_name)) +
+      facet_wrap(~ scenario, ncol = 3)
+  return(p)    
+}
+```
+```{r}
+p <- plot_state_membership("MotherMDSMembershipxAge")
+print(p)
+result <- "Manual"
+```
+```{r, results='asis'}
+test_results <- new_result(test_results,
+                         name = ctest_name,
+                         result = result)
+rm('ctest_name', 'cscenarios', 'result')
+```
+
+
+```{r MDETAILED State Membership tracking, results='asis'}
+ctest_name <- 'MDETAILED State Membership tracking'
+cscenarios <- 'All'
+test_results <- new_test(test_results,
+                         name = ctest_name,
+                         scenarios = cscenarios,
+                         description = "Plots showing the membership of mothers to the different states in the MDEATH_SCHED_STATE")
+```
+```{r}
+p <- plot_state_membership("MotherMDMembershipxAge")
+print(p)
+result <- "Manual"
+```
+```{r, results='asis'}
+test_results <- new_result(test_results,
+                         name = ctest_name,
+                         result = result)
+rm('ctest_name', 'cscenarios', 'result')
+```
+
+## Child
+
+## Summary of All Tests
+Model Version: `r ModelVersion`
+
+```{r, results='asis'}
+print_test_results(test_results)
+odbcCloseAll()
+```

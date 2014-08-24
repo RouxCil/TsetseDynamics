@@ -22,6 +22,9 @@ actor Pupa
 {
 	int AGE = self_scheduling_int(age);
 	TIME adult_emerge = { TIME_INFINITE };
+	logical alive = {TRUE};
+	logical cohort = {FALSE};
+	logical transition_adult = {FALSE};
 
 	REPORT_TIME report_time = {0};
 	GENDER gender;
@@ -31,16 +34,36 @@ actor Pupa
 	double ADULT_EMERGE( double current_time, double k, double a, double b );
 	
 	event timeAdultEmerge, AdultEmergeEvent;
+	event timeMortality, MortalityEvent;
 };
 
 void Pupa::Start()
 {
 	age = 0;
-	time;
 	gender = ( RandUniform(2) <= 0.5 ) ? FEMALE : MALE;
 	adult_emerge = WAIT( (TIME) ADULT_EMERGE(time, pupa_numeric_constant[gender], pupa_exp_const[gender], pupa_exp_TempPar[gender]) );
 }
 
 void Pupa::Finish()
 {
+	alive = FALSE;
+}
+
+TIME Pupa::timeMortality()
+{
+	TIME death_event = TIME_INFINITE;
+	double death_probability = 0.3;
+	double random_number = RandUniform(6);
+	if(random_number < death_probability)
+	{
+		death_event = WAIT( (TIME) RandUniform(7)*adult_emerge );
+	}
+
+	return death_event;
+}
+
+void Pupa::MortalityEvent()
+{
+	alive = FALSE;
+	Finish();
 }

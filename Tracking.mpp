@@ -12,7 +12,8 @@ track TsetseFly
 	mark9,
 	mark10,
 	AGE,
-	next_larva_deposit
+	next_larva_deposit,
+	report_time
 };
 track Pupa
 {

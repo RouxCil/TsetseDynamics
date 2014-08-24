@@ -38,13 +38,13 @@ void UserTables()
 	int mvalueMarks;
 	int mtotalWeek;
 
-	for (int j = 0; j < SIZE(MARK)-1; j++)
+	for (int j = 0; j < SIZE(MARK)-2; j++)
 	{
-		for (int i = 0; i < SIZE(MARK)-1; i++)
+		for (int i = 0; i < SIZE(MARK)-2; i++)
 		{
 			int ftotalWeek = {0};
 			int mtotalWeek = {0};
-			for (int k = 0; k < 55; k++)
+			for (int k = 0; k < 54; k++)
 			{
 				fvalueMarks = GetTableValue(fuser_tab_cell_names[k], i, j);
 				ftotalWeek += fvalueMarks;
