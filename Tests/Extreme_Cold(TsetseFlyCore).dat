@@ -9,12 +9,12 @@ parameters {
 	double	mortality_AgePar[GENDER] = {0.0583, 0.0119};
 	double	alpha = 0.05;
 
-	double	capture_const[GENDER][AGE_PART] = {0.634874653, 0.921825482, 0.814288446, (8) 0.799375438,	0.319273932, 0.312935615, 0.354598177, 0.15615205, 0.271591706, 0.220682383, 0.25891507, 0.312616961, 0.575558658, (2) 0.478293869};
+	double	capture_const[GENDER][AGE_PART] = {0.634874653, 0.921825482, 0.814288446, (8) 0.799375438,	0.319273932, 0.312920615, 0.204598177, 0.15615205, 0.271591706, 0.220682383, 0.25891507, 0.312616961, 0.575558658, (2) 0.478293869};
 
 	logical	Switch_on_reproduction = TRUE;
 
 	int	StartingPopulationSize = 2000;
-	double	DailyAvgTemperature[REPORT_TIME] = {(771) 35};
+	double	DailyAvgTemperature[REPORT_TIME] = {(771) 20};
 
 	double	pupa_exp_const[GENDER] = {5.5, 5.3};
 	double	pupa_exp_TempPar[GENDER] = {-0.25, -0.24};
@@ -22,6 +22,6 @@ parameters {
 	
 	double pupa_mortality = 0.3;
 
-	logical	Switch_on_random_start = TRUE;
+	logical	Switch_on_random_start = FALSE;
 };
 

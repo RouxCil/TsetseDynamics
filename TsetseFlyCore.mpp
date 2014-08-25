@@ -61,7 +61,7 @@ void TsetseFly::Start(GENDER p_gender, logical p_cohort)
 	cohort = p_cohort;
 	time_at_birth = time;
 	markable = ( int(time) >= 400 ) ? TRUE : FALSE;
-	report_time = int(time);
+	report_time = int(time) + 1;
 
 	if(gender == FEMALE & Switch_on_reproduction )
 	{

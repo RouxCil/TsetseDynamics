@@ -49,14 +49,19 @@ Tsetse_cohort_Tester <- function(db_channel)
     xlim(0,100) +
     theme(legend.position = "bottom") +
     labs(x = 'Time')
+  
+  out[['Random_start']] <- ggplot(data = Tsetse) + geom_histogram(aes(x = birth, fill = gender), binwidth = 1) + 
+    xlim(0,50) +
+    theme(legend.position = "bottom") +
+    labs(x = 'Time')
 
   out[['larva_total']] <- ggplot(data = subset(Tsetse, gender == 'FEMALE'), aes(x = total)) + geom_histogram(binwidth = 1) + 
     xlim(0,30) + 
     labs(x = 'Number of pupa')
   
-  out[['Fly_survival']] <- autoplot(survfit(Surv(duration) ~ gender, Tsetse))$plot
+  out[['Fly_survival']] <- autoplot(survfit(Surv(duration) ~ gender, Tsetse), title = '', legLabs = c('F','M'), legTitle = 'Gender')$plot + xlim(0,250) + labs(x = 'Age', y = 'Survival')
   
-  out[['Between_age_death']] <- ggplot(data = Tsetse) + geom_histogram(aes(x = duration-floor(duration)), binwidth = 0.1)
+  out[['Between_age_death']] <- autoplot(survfit(Surv(duration-floor(duration)) ~ gender, Tsetse), title = '', legLabs = c('F','M'), legTitle = 'Gender', xlab = 'Age')$plot
   
   WD <- as.data.frame(new_RTable("Pupa_Tester", db_channel))
   names(WD)[2] <- c('ActorID')
@@ -64,8 +69,41 @@ Tsetse_cohort_Tester <- function(db_channel)
   
   Pupa <- dcast(data = WD, formula = ActorID + gender ~ metrics, value.var = 'Value')
   Pupa <- Pupa[Pupa$unit==1,]
+  Pupa$status <- -1
+  Pupa$status[Pupa$gender == 'MALE'] <- ifelse(round(Pupa$duration[Pupa$gender == 'MALE'], 4) == c(round(results_m[1],4)), 0, 1)
+  Pupa$status[Pupa$gender == 'FEMALE'] <- ifelse(round(Pupa$duration[Pupa$gender == 'FEMALE'], 4) == c(round(results_f[1],4)), 0, 1)
   
-  #out[['Pupa_survival']] <- autoplot(survfit(Surv(duration) ~ gender, Pupa))$plot
+  out[['Pupa_survival']] <- autoplot(survfit(Surv(duration, status) ~ gender, Pupa), title = '', legLabs = c('F','M'), legTitle = 'Gender')$plot + xlim(0,50) + ylim(0,1) + labs(x = 'Time', y = 'Survival')
+  
+  WD <- as.data.frame(new_RTable("Total", db_channel))
+  plot_data <- subset(WD, Value != 0)
+  
+  out[['Population']] <- ggplot(plot_data, aes(x = report_time, y = Value, col = gender)) + geom_point()
+  
+#   m1 <- as.data.frame(new_RTable("Mark1", db_channel))
+#   m2 <- as.data.frame(new_RTable("Mark2", db_channel))
+#   m3 <- as.data.frame(new_RTable("Mark3", db_channel))
+#   m4 <- as.data.frame(new_RTable("Mark4", db_channel))
+#   m5 <- as.data.frame(new_RTable("Mark5", db_channel))
+#   m6 <- as.data.frame(new_RTable("Mark6", db_channel))
+#   m7 <- as.data.frame(new_RTable("Mark7", db_channel))
+#   m8 <- as.data.frame(new_RTable("Mark8", db_channel))
+#   m9 <- as.data.frame(new_RTable("Mark9", db_channel))
+#   m10 <- as.data.frame(new_RTable("Mark10", db_channel))
+#   All_marks <- rbind(m1, m2, m3, m4, m5, m6, m7, m8, m9, m10)
+#   
+#   names(All_marks)[3] <- c('Week')
+#   All_marks <- All_marks[All_marks$Value != 0,]
+#   All_marks$Week <- as.numeric(substr(All_marks$Week, 6,8))
+#   All_marks$mark <- factor(All_marks$mark, levels = c('week0','week1','week2','week3','week4','week5','week6','week7','week8','week9','week10','week11',
+#                                                       'week12','week13','week14','week15','week16','week17','week18','week19','week20','week21','week22',
+#                                                       'week23','week24','week25','week26','week27','week28','week29','week30','week31','week32','week33',
+#                                                       'week34','week35','week36'), ordered = T)
+#   
+#   Total_marks <- dcast(data = All_marks, formula = Week + gender ~ mark, fun.aggregate = sum, value.var = 'Value')
+#   Total_marks_f <- subset(Total_marks, gender == 'FEMALE')
+#   Total_marks_m <- subset(Total_marks, gender == 'MALE')
+#   
   
   return(out)
 }

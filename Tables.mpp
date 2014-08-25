@@ -20,7 +20,7 @@ table TsetseFly Tsetse_Tester
 };
 
 table Pupa Pupa_Tester
-[cohort == TRUE && transition_adult == FALSE]
+[cohort == TRUE]
 {
 	gender*
 	split(actor_id,ID)*

@@ -8,7 +8,6 @@ void Pupa::AdultEmergeEvent()
 	adult_emerge = TIME_INFINITE;
 	TsetseFly *paTsetseFly = new TsetseFly();
 	paTsetseFly->Start(gender, cohort);
-	transition_adult = TRUE;
 	Finish();
 }
 
