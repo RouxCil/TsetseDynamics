@@ -7,7 +7,7 @@ parameters {
 	double	mortality_const[GENDER] = {0.389, 0.605};
 	double	mortality_TempPar[GENDER] = {0.395, 0.201};
 	double	mortality_AgePar[GENDER] = {0.0583, 0.0119};
-	double	alpha = 0.05;
+	double	alpha = -0.01;
 
 	double	capture_const[GENDER][AGE_PART] = {0.634874653, 0.921825482, 0.814288446, (8) 0.799375438,	0.319273932, 0.312935615, 0.354598177, 0.15615205, 0.271591706, 0.220682383, 0.25891507, 0.312616961, 0.575558658, (2) 0.478293869};
 
