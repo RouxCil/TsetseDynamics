@@ -1,0 +1,30 @@
+parameters {
+
+	double	larva_const[LARVA_NR] = {.061, 0.1046};
+
+	double	larva_TempPar[LARVA_NR] = {0.0020, 0.0052};
+	double	offset = 24;
+	logical	Switch_on_reproduction = TRUE;
+	logical	Switch_on_random_start = TRUE;
+
+	double	capture_const[GENDER] = {(2) 0.0001};
+
+	double	capture_AgePar[GENDER] = {(2) 0.0169};
+
+	double	mortality_const[GENDER] = {0.389, 0.605};
+
+	double	mortality_TempPar[GENDER] = {0.395, 0.201};
+
+	double	mortality_AgePar[GENDER] = {0.0583, 0.0119};
+	double	alpha = 0.05; //EN alpha
+
+	double	pupa_exp_const[GENDER] = {5.5, 5.3};
+
+	double	pupa_exp_TempPar[GENDER] = {-0.25, -0.24};
+
+	double	pupa_numeric_constant[GENDER] = {0.057, 0.053};
+	int	StartingPopulationSize = 2000;
+
+	double	DailyAvgTemperature[REPORT_TIME] = {(771) 35};
+};
+

@@ -7,7 +7,9 @@ td <- "C:/Users/Roux-Cil/Desktop/Masters File/Modgen/TsetseDynamics/Tests"
 setwd(td)
 
 copy_model(sd, 'TsetseDynamicsD.exe', td)
+copy_scenario(sd, 'Base.scex', 'Base(TsetseFlyCore).dat', td)
 copy_scenario(sd, 'ConstantT.scex', 'ConstantT(TsetseFlyCore).dat', td)
+
 
 scenarios_to_create <- list(
   '1' = list(test_folder = td, 

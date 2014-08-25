@@ -20,7 +20,7 @@ table TsetseFly Tsetse_Tester
 };
 
 table Pupa Pupa_Tester
-[cohort == TRUE]
+[cohort == TRUE && transition_adult == FALSE]
 {
 	gender*
 	split(actor_id,ID)*
@@ -46,15 +46,15 @@ table TsetseFly Mark1
 	self_scheduling_split(time,TIMEGROUPS)*
 	{
 		event(value_at_changes(mark1,indexer)), //EN mark1
-		event(value_at_changes(mark2,indexer)), //EN mark2
-		event(value_at_changes(mark3,indexer)), //EN mark3
-		event(value_at_changes(mark4,indexer)), //EN mark4
-		event(value_at_changes(mark5,indexer)), //EN mark5
-		event(value_at_changes(mark6,indexer)), //EN mark6
-		event(value_at_changes(mark7,indexer)), //EN mark7
-		event(value_at_changes(mark8,indexer)), //EN mark8
-		event(value_at_changes(mark9,indexer)), //EN mark9
-		event(value_at_changes(mark10,indexer)) //EN mark10
+		event(value_at_changes(mark2,indexer)), //EN mark1
+		event(value_at_changes(mark3,indexer)), //EN mark1
+		event(value_at_changes(mark4,indexer)), //EN mark1
+		event(value_at_changes(mark5,indexer)), //EN mark1
+		event(value_at_changes(mark6,indexer)), //EN mark1
+		event(value_at_changes(mark7,indexer)), //EN mark1
+		event(value_at_changes(mark8,indexer)), //EN mark1
+		event(value_at_changes(mark9,indexer)), //EN mark1
+		event(value_at_changes(mark10,indexer)) //EN mark1
 	}
 };
 
@@ -65,14 +65,14 @@ table TsetseFly Mark2
 	self_scheduling_split(time,TIMEGROUPS)*
 	{
 		event(value_at_changes(mark2,indexer)), //EN mark2
-		event(value_at_changes(mark3,indexer)), //EN mark3
-		event(value_at_changes(mark4,indexer)), //EN mark4
-		event(value_at_changes(mark5,indexer)), //EN mark5
-		event(value_at_changes(mark6,indexer)), //EN mark6
-		event(value_at_changes(mark7,indexer)), //EN mark7
-		event(value_at_changes(mark8,indexer)), //EN mark8
-		event(value_at_changes(mark9,indexer)), //EN mark9
-		event(value_at_changes(mark10,indexer)) //EN mark10
+		event(value_at_changes(mark3,indexer)), //EN mark2
+		event(value_at_changes(mark4,indexer)), //EN mark2
+		event(value_at_changes(mark5,indexer)), //EN mark2
+		event(value_at_changes(mark6,indexer)), //EN mark2
+		event(value_at_changes(mark7,indexer)), //EN mark2
+		event(value_at_changes(mark8,indexer)), //EN mark2
+		event(value_at_changes(mark9,indexer)), //EN mark2
+		event(value_at_changes(mark10,indexer)) //EN mark2
 	}
 };
 
@@ -83,13 +83,13 @@ table TsetseFly Mark3
 	self_scheduling_split(time,TIMEGROUPS)*
 	{
 		event(value_at_changes(mark3,indexer)), //EN mark3
-		event(value_at_changes(mark4,indexer)), //EN mark4
-		event(value_at_changes(mark5,indexer)), //EN mark5
-		event(value_at_changes(mark6,indexer)), //EN mark6
-		event(value_at_changes(mark7,indexer)), //EN mark7
-		event(value_at_changes(mark8,indexer)), //EN mark8
-		event(value_at_changes(mark9,indexer)), //EN mark9
-		event(value_at_changes(mark10,indexer)) //EN mark10
+		event(value_at_changes(mark4,indexer)), //EN mark3
+		event(value_at_changes(mark5,indexer)), //EN mark3
+		event(value_at_changes(mark6,indexer)), //EN mark3
+		event(value_at_changes(mark7,indexer)), //EN mark3
+		event(value_at_changes(mark8,indexer)), //EN mark3
+		event(value_at_changes(mark9,indexer)), //EN mark3
+		event(value_at_changes(mark10,indexer)) //EN mark3
 	}
 };
 
@@ -100,12 +100,12 @@ table TsetseFly Mark4
 	self_scheduling_split(time,TIMEGROUPS)*
 	{
 		event(value_at_changes(mark4,indexer)), //EN mark4
-		event(value_at_changes(mark5,indexer)), //EN mark5
-		event(value_at_changes(mark6,indexer)), //EN mark6
-		event(value_at_changes(mark7,indexer)), //EN mark7
-		event(value_at_changes(mark8,indexer)), //EN mark8
-		event(value_at_changes(mark9,indexer)), //EN mark9
-		event(value_at_changes(mark10,indexer)) //EN mark10
+		event(value_at_changes(mark5,indexer)), //EN mark4
+		event(value_at_changes(mark6,indexer)), //EN mark4
+		event(value_at_changes(mark7,indexer)), //EN mark4
+		event(value_at_changes(mark8,indexer)), //EN mark4
+		event(value_at_changes(mark9,indexer)), //EN mark4
+		event(value_at_changes(mark10,indexer)) //EN mark4
 	}
 };
 
@@ -116,11 +116,11 @@ table TsetseFly Mark5
 	self_scheduling_split(time,TIMEGROUPS)*
 	{
 		event(value_at_changes(mark5,indexer)), //EN mark5
-		event(value_at_changes(mark6,indexer)), //EN mark6
-		event(value_at_changes(mark7,indexer)), //EN mark7
-		event(value_at_changes(mark8,indexer)), //EN mark8
-		event(value_at_changes(mark9,indexer)), //EN mark9
-		event(value_at_changes(mark10,indexer)) //EN mark10
+		event(value_at_changes(mark6,indexer)), //EN mark5
+		event(value_at_changes(mark7,indexer)), //EN mark5
+		event(value_at_changes(mark8,indexer)), //EN mark5
+		event(value_at_changes(mark9,indexer)), //EN mark5
+		event(value_at_changes(mark10,indexer)) //EN mark5
 	}
 };
 
@@ -131,10 +131,10 @@ table TsetseFly Mark6
 	self_scheduling_split(time,TIMEGROUPS)*
 	{
 		event(value_at_changes(mark6,indexer)), //EN mark6
-		event(value_at_changes(mark7,indexer)), //EN mark7
-		event(value_at_changes(mark8,indexer)), //EN mark8
-		event(value_at_changes(mark9,indexer)), //EN mark9
-		event(value_at_changes(mark10,indexer)) //EN mark10
+		event(value_at_changes(mark7,indexer)), //EN mark6
+		event(value_at_changes(mark8,indexer)), //EN mark6
+		event(value_at_changes(mark9,indexer)), //EN mark6
+		event(value_at_changes(mark10,indexer)) //EN mark6
 	}
 };
 
@@ -145,9 +145,9 @@ table TsetseFly Mark7
 	self_scheduling_split(time,TIMEGROUPS)*
 	{
 		event(value_at_changes(mark7,indexer)), //EN mark7
-		event(value_at_changes(mark8,indexer)), //EN mark8
-		event(value_at_changes(mark9,indexer)), //EN mark9
-		event(value_at_changes(mark10,indexer)) //EN mark10
+		event(value_at_changes(mark8,indexer)), //EN mark7
+		event(value_at_changes(mark9,indexer)), //EN mark7
+		event(value_at_changes(mark10,indexer)) //EN mark7
 	}
 };
 
@@ -158,8 +158,8 @@ table TsetseFly Mark8
 	self_scheduling_split(time,TIMEGROUPS)*
 	{
 		event(value_at_changes(mark8,indexer)), //EN mark8
-		event(value_at_changes(mark9,indexer)), //EN mark9
-		event(value_at_changes(mark10,indexer)) //EN mark10
+		event(value_at_changes(mark9,indexer)), //EN mark8
+		event(value_at_changes(mark10,indexer)) //EN mark8
 	}
 };
 
@@ -170,7 +170,7 @@ table TsetseFly Mark9
 	self_scheduling_split(time,TIMEGROUPS)*
 	{
 		event(value_at_changes(mark9,indexer)), //EN mark9
-		event(value_at_changes(mark10,indexer)) //EN mark10
+		event(value_at_changes(mark10,indexer)) //EN mark9
 	}
 };
 

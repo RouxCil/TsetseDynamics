@@ -1,6 +1,6 @@
 double Survival_Function(int Age, double k1, double k2, double k3, int current_report_time)
 {
-	double prop = exp(k1*(exp(-k2*DailyAvgTemperature[RANGE_POS( REPORT_TIME, int(current_report_time) )]*Age) - exp(k3*Age)));
+	double prop = exp(k1*(exp(-k2* exp( -alpha * DailyAvgTemperature[RANGE_POS( REPORT_TIME, int(current_report_time) )] ) *Age) - exp(k3*Age)));
 	return prop;
 }
 
@@ -13,7 +13,6 @@ TIME TsetseFly::timeMortality()
 	{
 		death_event = WAIT( (TIME) RandUniform(5) );
 	}
-
 	return death_event;
 }
 
