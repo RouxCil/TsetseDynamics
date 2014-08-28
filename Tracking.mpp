@@ -9,5 +9,11 @@ track TsetseFly
 	mark7,
 	mark8,
 	mark9,
-	mark10
+	mark10,
+	next_larva_deposit
+};
+
+track Pupa
+{
+	adult_emerge
 };

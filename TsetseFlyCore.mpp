@@ -27,7 +27,7 @@ actor TsetseFly
 	int nmarks = {0};
 	int number_pupa = {0};
 	int age_part = self_scheduling_split(age, AGE_PART);
-	double parm = capture_const[gender][age_part];
+	int age_part_previous = {-1};
 	TIME next_larva_deposit = {TIME_INFINITE};
 	double time_at_birth;
 

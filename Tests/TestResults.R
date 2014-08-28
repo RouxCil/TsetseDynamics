@@ -15,7 +15,7 @@ for (i in all_results){
   db_channels[[scenario_name]] <- db_channel
 }
 
-Tsetse_cohort_Tester <- function(db_channel)
+Tsetse_cohort_Tester <- function(channel)
 {
   require(plyr)
   require(sqldf)
@@ -25,7 +25,7 @@ Tsetse_cohort_Tester <- function(db_channel)
   require(reshape2)
   out <- list()
   
-  WD <- as.data.frame(new_RTable("Tsetse_Tester", db_channel))
+  WD <- as.data.frame(new_RTable("Tsetse_Tester", channel))
   names(WD)[2] <- c('ActorID')
   WD$metrics <- factor(WD$metrics, labels = c('duration', 'unit', 'birth', 'first', 'sec', 'third', 'total'))
   
@@ -33,6 +33,25 @@ Tsetse_cohort_Tester <- function(db_channel)
   Tsetse <- Tsetse[Tsetse$unit==1,]
   results_f <- sqldf('select min(birth), first-min(birth), sec-first from Tsetse where total>3')
   results_m <- sqldf("select min(birth) from Tsetse where gender == 'MALE'")
+  
+  mortality_AgePar <- as.data.frame(new_PTable("mortality_AgePar", channel))
+  mortality_const <- as.data.frame(new_PTable("mortality_const", channel))
+  mortality_TempPar <- as.data.frame(new_PTable("mortality_TempPar", channel))
+  alpha <- as.data.frame(new_PTable("alpha", channel))
+  Temp <- min(as.data.frame(new_PTable("DailyAvgTemperature", channel))[,2])
+  
+  m_mortality <- function(x)
+  {
+    surv <- exp(mortality_const[1,2]*( exp(-mortality_TempPar[1,2]*exp(alpha$Value*35)*x) - exp(mortality_AgePar[1,2]*x)))
+    return(surv)
+  }
+  
+  f_mortality <- function(x)
+  {
+    surv <- exp(mortality_const[2,2]*(exp(-mortality_TempPar[2,2]*exp(alpha$Value*35)*x) - exp(mortality_AgePar[2,2]*x)))
+    return(surv)
+  }
+
   
   out[['Reproduction']] <- ggplot(data = Tsetse) + geom_histogram(aes(x = birth, fill = gender), binwidth = 1) + 
     geom_histogram(aes(x = first), data = subset(Tsetse, first != 0), binwidth = 1) + 
@@ -59,11 +78,15 @@ Tsetse_cohort_Tester <- function(db_channel)
     xlim(0,30) + 
     labs(x = 'Number of pupa')
   
-  out[['Fly_survival']] <- autoplot(survfit(Surv(duration) ~ gender, Tsetse), title = '', legLabs = c('F','M'), legTitle = 'Gender')$plot + xlim(0,250) + labs(x = 'Age', y = 'Survival')
+  out[['Fly_survival']] <- autoplot(survfit(Surv(duration) ~ gender, Tsetse))$plot + 
+    stat_function(col = 'black', fun = function(x) exp(mortality_const[1,2]*(exp(-mortality_TempPar[1,2]*exp(alpha$Value*20)*x) - exp(mortality_AgePar[1,2]*x)))) + 
+    stat_function(col = 'black', fun = function(x) exp(mortality_const[2,2]*(exp(-mortality_TempPar[2,2]*exp(alpha$Value*20)*x) - exp(mortality_AgePar[2,2]*x)))) 
+   
+   
   
   out[['Between_age_death']] <- autoplot(survfit(Surv(duration-floor(duration)) ~ gender, Tsetse), title = '', legLabs = c('F','M'), legTitle = 'Gender', xlab = 'Age')$plot
   
-  WD <- as.data.frame(new_RTable("Pupa_Tester", db_channel))
+  WD <- as.data.frame(new_RTable("Pupa_Tester", channel))
   names(WD)[2] <- c('ActorID')
   WD$metrics <- factor(WD$metrics, labels = c('duration', 'unit'))
   
@@ -74,8 +97,7 @@ Tsetse_cohort_Tester <- function(db_channel)
   Pupa$status[Pupa$gender == 'FEMALE'] <- ifelse(round(Pupa$duration[Pupa$gender == 'FEMALE'], 4) == c(round(results_f[1],4)), 0, 1)
   
   out[['Pupa_survival']] <- autoplot(survfit(Surv(duration, status) ~ gender, Pupa), title = '', legLabs = c('F','M'), legTitle = 'Gender')$plot + xlim(0,50) + ylim(0,1) + labs(x = 'Time', y = 'Survival')
-  
-  WD <- as.data.frame(new_RTable("Total", db_channel))
+  WD <- as.data.frame(new_RTable("Total", channel))
   plot_data <- subset(WD, Value != 0)
   
   out[['Population']] <- ggplot(plot_data, aes(x = report_time, y = Value, col = gender)) + geom_point()

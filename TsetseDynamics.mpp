@@ -55,7 +55,14 @@ void Simulation()
 		max = paPupa->adult_emerge;
 		if(Switch_on_random_start)
 		{
-			paPupa->adult_emerge = RandUniform(4)*max;
+			double random_start_random_number = RandUniform(4);
+			if (random_start_random_number >= 0.5)
+			{
+				paPupa->adult_emerge = ceil( random_start_random_number*max );
+			} else
+			{
+				paPupa->adult_emerge = floor( random_start_random_number*max );
+			}
 		}
 	}
 

@@ -20,16 +20,16 @@ classification MARK
 
 partition AGE_PART
 {
-	9,18,27,36,45,54,63,72,81,90
+	7,14,21,28,35,42,49,56,63,70,77,84,91,98,105,112,119,126,133,140,147,154,161,168,175,182,189,196,203
 };
 
 TIME TsetseFly::timeCapture()
 {
 	TIME mark_event = TIME_INFINITE;
-	double random_number = RandUniform(3);
-	if(random_number < capture_const[gender][age_part] && markable)
+	double capture_random_number = RandUniform(3);
+	if(capture_random_number < capture_const[gender][age_part] && markable && age_part != age_part_previous)
 	{
-		mark_event = WAIT( (TIME) RandUniform(8)*9 );
+		mark_event = WAIT( (TIME) RandUniform(8)*7 );
 	}
 
 	return mark_event;
@@ -37,6 +37,7 @@ TIME TsetseFly::timeCapture()
 
 void TsetseFly::CaptureEvent()
 {
+	age_part_previous = SPLIT(age, AGE_PART);
 	int curentEventInterval = SPLIT(time, TIMEGROUPS);
 	if (curentEventInterval != previousEventInterval)
 	{

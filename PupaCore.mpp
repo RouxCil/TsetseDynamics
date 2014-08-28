@@ -52,11 +52,12 @@ void Pupa::Finish()
 TIME Pupa::timeMortality()
 {
 	TIME death_event = TIME_INFINITE;
+	double test = report_time;
 	double death_probability = pupa_mortality;
-	double random_number = RandUniform(6);
-	if(random_number < death_probability)
+	double pupa_surv_random_number = RandUniform(6);
+	if(pupa_surv_random_number < death_probability)
 	{
-		death_event = WAIT( (TIME) RandUniform(7)*adult_emerge );
+		death_event = WAIT( (TIME) RandUniform(7) );
 	}
 	return death_event;
 }

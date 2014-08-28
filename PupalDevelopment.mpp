@@ -13,8 +13,8 @@ void Pupa::AdultEmergeEvent()
 
 double Pupa::ADULT_EMERGE( double current_time, double k, double a, double b )
 {
-	double puparial_period = int(current_time) - current_time;
-	double sum =  (k / (1 + exp( a + b * DailyAvgTemperature[RANGE_POS( REPORT_TIME, int(current_time) + int(puparial_period) )])))*puparial_period;
+	double puparial_period = 0;//int(current_time) - current_time;
+	double sum =  0;//(k / (1 + exp( a + b * DailyAvgTemperature[RANGE_POS( REPORT_TIME, int(current_time) + int(puparial_period) )])))*puparial_period;
 	while ( sum < 1 ) 
 	{
 		sum += k / (1 + exp( a + b * DailyAvgTemperature[RANGE_POS( REPORT_TIME, int(current_time) + int(puparial_period) )]));
@@ -23,6 +23,13 @@ double Pupa::ADULT_EMERGE( double current_time, double k, double a, double b )
 		{
 			double time_reduction = (sum-1)/( k / (1 + exp( a + b * DailyAvgTemperature[RANGE_POS( REPORT_TIME, int(current_time) + int(puparial_period) )])) );
 			puparial_period = puparial_period - time_reduction;
+			if(puparial_period - int(puparial_period) >= 0.5)
+			{
+				puparial_period = ceil( puparial_period );
+			} else
+			{
+				puparial_period = floor( puparial_period );
+			}
 		}
 	}
 	return puparial_period;
