@@ -1,3 +1,7 @@
+actor TsetseFly
+{
+	double test = DailyAvgTemperature[RANGE_POS( REPORT_TIME, time_at_birth )];
+};
 track TsetseFly
 {
 	mark1,
@@ -10,7 +14,8 @@ track TsetseFly
 	mark8,
 	mark9,
 	mark10,
-	next_larva_deposit
+	next_larva_deposit,
+	test
 };
 
 track Pupa

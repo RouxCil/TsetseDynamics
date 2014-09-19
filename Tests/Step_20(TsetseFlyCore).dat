@@ -5,17 +5,17 @@ parameters {
 	double	offset = 24;
 
 	
-	double	mortality_const[GENDER] = {0.013892857, 0.021607143};
+	double	mortality_const[GENDER] = {0.013892057, 0.021607143};
 	double	mortality_TempPar[GENDER] = {0.014107143, 0.007178571};
 	double	mortality_AgePar[GENDER] = {0.002082143, 0.000425};
 
 	double	capture_const[GENDER][AGE_PART] = {
 		(9) 0.105907519, (9) 0.246631867, (9) 0.170607927, (174) 0.16345921, 
-		(9) 0.041832633, (9) 0.040845422, (9) 0.047488954, (9) 0.018687947, (9) 0.03459772, (9) 0.027323828, (9) 0.032745215, (9) 0.040796005, (9) 0.090827253, (120) 0.069743138, 
+		(9) 0.041832633, (9) 0.040845422, (9) 0.047488954, (9) 0.018687947, (9) 0.03459772, (9) 0.027323820, (9) 0.032745215, (9) 0.040796005, (9) 0.090827253, (120) 0.069743138, 
 	};
 	logical	Switch_on_reproduction = TRUE; 
 	int	StartingPopulationSize = 2000;
-	double	DailyAvgTemperature[REPORT_TIME] = {(771) 28};
+	double	DailyAvgTemperature[REPORT_TIME] = {(771) 20};
 
 	double	pupa_exp_const[GENDER] = {5.3, 5.5};
 	double	pupa_exp_TempPar[GENDER] = {-0.24, -0.25};

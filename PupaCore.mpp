@@ -52,7 +52,7 @@ void Pupa::Finish()
 TIME Pupa::timeMortality()
 {
 	TIME death_event = TIME_INFINITE;
-	double test = report_time;
+	double reschedule = report_time;
 	double death_probability = pupa_mortality;
 	double pupa_surv_random_number = RandUniform(6);
 	if(pupa_surv_random_number < death_probability)

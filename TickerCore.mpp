@@ -74,6 +74,9 @@ void Ticker::TickEvent()
 	{
 		TsetseFly *paTsetseFly = asAllTsetseFly->Item( nJ );
 		paTsetseFly->report_time = report_time;
+		double get_age = paTsetseFly->age_part;
+		GENDER get_gender = paTsetseFly->gender;
+		paTsetseFly->capture_prob = capture_const[get_gender][get_age];
 		if(int(time) == 400)
 		{
 			paTsetseFly->markable = TRUE;

@@ -2,6 +2,6 @@
 <Scenario ScenarioVersion="1.8">
 	<General SimulationEnd="350" Threads="1" Subsamples="1" PartialReports="0" StartingSeed="654859" ComputationPriority="THREAD_PRIORITY_NORMAL" CancelPartialResults="PARTIAL_YES" BackgroundMode="0" SilentMode="0" DistributedExecution="0" DistributedSamples="1" AccessTracking="0" TextTracking="0" CopyParameters="1" MemoryReports="0"></General>
 	<Inputs>
-		<Input>.\ConstantT(TsetseFlyCore).dat=C:\Users\Roux-Cil\Desktop\Masters File\Modgen\TsetseDynamics\ConstantT(TsetseFlyCore).dat</Input>
+		<Input>.\Step_28(TsetseFlyCore).dat=C:\Users\Roux-Cil\Desktop\Masters File\Modgen\TsetseDynamics\Tests\Step_28(TsetseFlyCore).dat</Input>
 	</Inputs>
 </Scenario>
