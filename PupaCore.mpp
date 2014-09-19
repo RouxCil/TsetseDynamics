@@ -26,7 +26,7 @@ actor Pupa
 	logical alive = {TRUE};
 	logical cohort = {FALSE};
 
-	REPORT_TIME report_time;
+	REPORT_TIME report_time = {0};
 	GENDER gender;
 	
 	void Start();
@@ -39,7 +39,6 @@ actor Pupa
 
 void Pupa::Start()
 {
-	report_time = int(time) + 1;
 	age = 0;
 	gender = ( RandUniform(2) <= 0.5 ) ? FEMALE : MALE;
 	adult_emerge = WAIT( (TIME) ADULT_EMERGE(time, pupa_numeric_constant[gender], pupa_exp_const[gender], pupa_exp_TempPar[gender]) );

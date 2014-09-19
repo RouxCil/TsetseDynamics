@@ -10,18 +10,16 @@ TIME TsetseFly::timeMortality()
 	TIME death_event = TIME_INFINITE;
 	double at_day_age = ceil( time_at_birth ) - time_at_birth;
 	double death_probability = 0;
-	double survival_probability = 1;
-	//double start_age = 0;
-	//double end_age = ;
+	double survival_probability = Survival_Function(at_day_age, mortality_const[gender], mortality_TempPar[gender] , mortality_AgePar[gender], int( time_at_birth )) / Survival_Function(0, mortality_const[gender], mortality_TempPar[gender] , mortality_AgePar[gender], int( time_at_birth ));
 	double rn = RandUniform(1);
 
-	double i = -1;
+	double i = 0;
 	while(rn < survival_probability)
 	{
 		i++;
-		death_probability = 1 - Survival_Function(i + at_day_age, mortality_const[gender], mortality_TempPar[gender] , mortality_AgePar[gender], int( time_at_birth ) + i) / Survival_Function(i, mortality_const[gender], mortality_TempPar[gender] , mortality_AgePar[gender], int( time_at_birth ) + i);
-		survival_probability = survival_probability*(1-death_probability);
 		at_day_age++;
+		death_probability = 1 - Survival_Function(at_day_age, mortality_const[gender], mortality_TempPar[gender] , mortality_AgePar[gender], int( time_at_birth ) + i) / Survival_Function(at_day_age - 1, mortality_const[gender], mortality_TempPar[gender] , mortality_AgePar[gender], int( time_at_birth ) + i);
+		survival_probability = survival_probability*(1-death_probability);
 	};
 	return(WAIT((TIME) at_day_age ));
 }

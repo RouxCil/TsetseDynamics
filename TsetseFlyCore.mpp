@@ -30,7 +30,7 @@ actor TsetseFly
 	double time_at_birth;
 	double capture_prob;
 
-	REPORT_TIME report_time;
+	REPORT_TIME report_time = {0};
 	GENDER gender;
 	LARVA_NR first_larvae = {FIRST};
 	MARK mark1 = {never99};
@@ -60,8 +60,7 @@ void TsetseFly::Start(GENDER p_gender, logical p_cohort)
 	cohort = p_cohort;
 	time_at_birth = time;
 	markable = ( int(time) >= 400 ) ? TRUE : FALSE;
-	report_time = int(time) + 1;
-
+	
 	if(gender == FEMALE & Switch_on_reproduction )
 	{
 		next_larva_deposit = WAIT( (TIME) NEXT_LARVA_DEPOSIT( time, larva_const[first_larvae], larva_TempPar[first_larvae] ) );

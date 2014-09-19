@@ -29,9 +29,15 @@ TIME TsetseFly::timeCapture()
 	double capture_random_number = RandUniform(3);
 	if(capture_random_number < capture_prob && markable)
 	{
-		mark_event = WAIT( (TIME) RandUniform(8) );
+		double fly_round_unif = RandUniform(8);
+		if (capture_random_number*capture_prob <=0.5)
+		{
+			mark_event = WAIT( (TIME) 0.25 + ( 0.354 - 0.25 )*fly_round_unif );
+		} else
+		{
+			mark_event = WAIT( (TIME) 0.646 + (0.75 - 0.646 )*fly_round_unif );
+		}
 	}
-
 	return mark_event;
 }
 

@@ -24,11 +24,11 @@ double TsetseFly::NEXT_LARVA_DEPOSIT(double current_time, double k1, double k2)
 	double sum = (k1 + k2*( DailyAvgTemperature[RANGE_POS( REPORT_TIME, int(current_time) )] - offset ))*inter_larval_period;
 	while ( sum < 1 ) 
 	{
-		sum += k1 + k2*( DailyAvgTemperature[RANGE_POS( REPORT_TIME, int(current_time) + int(inter_larval_period) )] - offset );
+		sum += k1 + k2*( DailyAvgTemperature[RANGE_POS( REPORT_TIME, int(current_time + inter_larval_period) )] - offset );
 		inter_larval_period++;
 		if (sum > 1)
 		{
-			double time_reduction = (sum-1)/(k1 + k2*( DailyAvgTemperature[RANGE_POS( REPORT_TIME, int(current_time) + int(inter_larval_period) )] - offset ) );
+			double time_reduction = (sum-1)/(k1 + k2*( DailyAvgTemperature[RANGE_POS( REPORT_TIME, int(current_time + inter_larval_period) )] - offset ) );
 			//inter_larval_period = inter_larval_period - time_reduction;
 			if( time_reduction >= 0.375)
 			{
