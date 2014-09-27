@@ -18,10 +18,10 @@ TIME TsetseFly::timeMortality()
 	{
 		i++;
 		at_day_age++;
-		death_probability = 1 - Survival_Function(at_day_age, mortality_const[gender], mortality_TempPar[gender] , mortality_AgePar[gender], int( time_at_birth ) + i) / Survival_Function(at_day_age - 1, mortality_const[gender], mortality_TempPar[gender] , mortality_AgePar[gender], int( time_at_birth ) + i);
+		death_probability = 1 - Survival_Function(at_day_age, mortality_const[gender], mortality_TempPar[gender] , mortality_AgePar[gender], int( time_at_birth + i )) / Survival_Function(at_day_age - 1, mortality_const[gender], mortality_TempPar[gender] , mortality_AgePar[gender], int( time_at_birth ) + i);
 		survival_probability = survival_probability*(1-death_probability);
 	};
-	return(WAIT((TIME) at_day_age ));
+	return(WAIT((TIME) at_day_age + RandUniform(5) ));
 }
 
 void TsetseFly::MortalityEvent()

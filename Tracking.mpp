@@ -4,18 +4,12 @@ actor TsetseFly
 };
 track TsetseFly
 {
+	actor_id,
+	number_pupa,
 	mark1,
 	mark2,
 	mark3,
-	mark4,
-	mark5,
-	mark6,
-	mark7,
-	mark8,
-	mark9,
-	mark10,
-	next_larva_deposit,
-	test
+	capture_prob
 };
 
 track Pupa

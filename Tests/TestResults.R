@@ -23,6 +23,7 @@ Tsetse_cohort_Tester <- function(channel)
   require(survival)
   require(survMisc)
   require(reshape2)
+  library(scales)
   out <- list()
   
   WD <- as.data.frame(new_RTable("Tsetse_Tester", channel))
@@ -60,15 +61,13 @@ Tsetse_cohort_Tester <- function(channel)
     theme(legend.position = "bottom") +
     labs(x = 'Time')
 
-  out[['larva_total']] <- ggplot(data = subset(Tsetse, gender == 'FEMALE'), aes(x = total)) + geom_histogram(binwidth = 1) + 
+  out[['larva_total']] <- ggplot(data = subset(Tsetse, gender == 'FEMALE' & total > 1), aes(x = total)) + geom_histogram(binwidth = 1) + 
     xlim(0,30) + 
-    ylim(0,600) +
+    ylim(0,50) +
     labs(x = 'Number of pupa')
   
   out[['Fly_survival']] <- autoplot(survfit(Surv(duration) ~ gender, Tsetse), title = '', legLabs = c('F','M'), legTitle = 'Gender', xlab = 'Age')$plot + 
     xlim(0,300) + ylim(0,1) + labs(x = 'Time', y = 'Survival')
-  
-  out[['Between_age_death']] <- autoplot(survfit(Surv(duration-floor(duration)) ~ gender, Tsetse), title = '', legLabs = c('F','M'), legTitle = 'Gender', xlab = 'Age')$plot
   
   WD <- as.data.frame(new_RTable("Pupa_Tester", channel))
   names(WD)[2] <- c('ActorID')
@@ -91,7 +90,7 @@ Sim_Results <- function(channel)
   out <- list()
   
   WD <- as.data.frame(new_RTable("Fly_Total", channel))
-  plot_data <- subset(WD, Value != 0)
+  plot_data <- subset(WD, Value != 0 & report_time != 0)
   
   out[['Population']] <- ggplot(plot_data, aes(x = report_time, y = Value, col = gender)) + geom_point()
   
